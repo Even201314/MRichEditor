@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<inset xmlns:android="http://schemas.android.com/apk/res/android">
+  <ripple android:color="?android:attr/colorControlHighlight">
+    <item>
+      <!-- As we can't use themed ColorStateLists in L, we'll use a Drawable selector which
+           changes the shape's fill color. -->
+      <selector>
+        <item android:state_enabled="false">
+          <shape android:shape="rectangle">
+            <corners android:radius="4dp" />
+            <solid android:color="@color/white" />
+            <stroke
+                android:color="#e0e0e0"
+                android:width="0.5dp" />
+          </shape>
+        </item>
+        <item>
+          <shape android:shape="rectangle">
+            <corners android:radius="4dp" />
+            <solid android:color="@color/white" />
+            <stroke
+                android:color="#e0e0e0"
+                android:width="0.5dp" />
+          </shape>
+        </item>
+      </selector>
+    </item>
+  </ripple>
+</inset>
