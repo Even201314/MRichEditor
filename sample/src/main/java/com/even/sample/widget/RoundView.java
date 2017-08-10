@@ -18,6 +18,7 @@ import com.even.sample.R;
 public class RoundView extends View {
     private Paint mPaint;
     private int backgroundColor;
+    private boolean isSelected;
 
     public RoundView(Context context) {
         this(context, null);
@@ -38,19 +39,38 @@ public class RoundView extends View {
         ta.recycle();
 
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setColor(backgroundColor);
+        mPaint.setStrokeWidth(4);
     }
 
     @Override protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.drawCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, canvas.getWidth() / 2,
-            mPaint);
+        mPaint.setStyle(Paint.Style.FILL);
+        mPaint.setColor(backgroundColor);
+        int width = canvas.getWidth();
+        int height = canvas.getHeight();
+        canvas.drawCircle(width / 2, height / 2, width / 2, mPaint);
+
+        if (isSelected) {
+            mPaint.setColor(Color.WHITE);
+            canvas.drawLine(5 * width / 16, height / 2, 7 * width / 16, 5 * height / 8, mPaint);
+            canvas.drawLine(7 * width / 16, 5 * height / 8, 11 * width / 16, 3 * height / 8,
+                mPaint);
+        }
     }
 
     public int getBackgroundColor() {
         return backgroundColor;
+    }
+
+    @Override public boolean isSelected() {
+        return isSelected;
+    }
+
+    @Override public void setSelected(boolean selected) {
+        isSelected = selected;
+
+        invalidate();
     }
 
     @Override public void setBackgroundColor(int backgroundColor) {

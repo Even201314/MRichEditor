@@ -1,6 +1,7 @@
 package com.even.sample;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -11,8 +12,11 @@ import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.even.mricheditor.ActionType;
 import com.even.mricheditor.RichEditorAction;
 import com.even.mricheditor.RichEditorCallback;
@@ -20,11 +24,16 @@ import com.even.sample.fragment.EditorMenuFragment;
 import com.even.sample.keyboard.KeyboardHeightObserver;
 import com.even.sample.keyboard.KeyboardHeightProvider;
 import com.even.sample.keyboard.KeyboardUtils;
+import com.lzy.imagepicker.ImagePicker;
+import com.lzy.imagepicker.bean.ImageItem;
+import com.lzy.imagepicker.ui.ImageGridActivity;
+import com.lzy.imagepicker.view.CropImageView;
+import java.util.ArrayList;
 
 @SuppressLint("SetJavaScriptEnabled") public class RichEditorActivity extends AppCompatActivity
     implements KeyboardHeightObserver, EditorMenuFragment.OnActionClickListener {
     private WebView mWebView;
-    private RelativeLayout rlAction;
+    @BindView(R.id.fl_action) FrameLayout flAction;
 
     /** The keyboard height provider */
     private KeyboardHeightProvider keyboardHeightProvider;
@@ -35,71 +44,124 @@ import com.even.sample.keyboard.KeyboardUtils;
 
     private EditorMenuFragment mEditorMenuFragment;
 
-    private ImageView ivBold;
-    private ImageView ivItalic;
-    private ImageView ivUnderline;
-    private ImageView ivStrikethrough;
-    private ImageView ivSubScript;
-    private ImageView ivSuperScript;
-    private ImageView ivCodeView;
+    @BindView(R.id.iv_action_bold) ImageView ivBold;
+    @BindView(R.id.iv_action_italic) ImageView ivItalic;
+    @BindView(R.id.iv_action_underline) ImageView ivUnderline;
+    @BindView(R.id.iv_action_strikethrough) ImageView ivStrikethrough;
+
+    @BindView(R.id.iv_action_justify_left) ImageView ivJustifyLeft;
+    @BindView(R.id.iv_action_justify_center) ImageView ivJustifyCenter;
+    @BindView(R.id.iv_action_justify_right) ImageView ivJustifyRight;
+    @BindView(R.id.iv_action_justify_full) ImageView ivJustifyFull;
+
+    @BindView(R.id.iv_action_insert_numbers) ImageView ivOrdered;
+    @BindView(R.id.iv_action_insert_bullets) ImageView ivUnOrdered;
+
+    @BindView(R.id.iv_action_indent) ImageView ivIndent;
+    @BindView(R.id.iv_action_outdent) ImageView ivOutdent;
+
+    @BindView(R.id.iv_action_subscript) ImageView ivSubScript;
+    @BindView(R.id.iv_action_superscript) ImageView ivSuperScript;
+
+    @BindView(R.id.iv_action_insert_image) ImageView ivImage;
+    @BindView(R.id.iv_action_insert_link) ImageView ivLink;
+    @BindView(R.id.iv_action_table) ImageView ivTable;
+    @BindView(R.id.iv_action_line) ImageView ivLine;
+
+    @BindView(R.id.iv_action_blockquote) ImageView ivBlockQuote;
+    @BindView(R.id.iv_action_code_block) ImageView ivCodeBlock;
+
+    @BindView(R.id.iv_action_code_view) ImageView ivCodeView;
+
+    @BindView(R.id.iv_action_heading1) ImageView ivH1;
+    @BindView(R.id.iv_action_heading2) ImageView ivH2;
+    @BindView(R.id.iv_action_heading3) ImageView ivH3;
+
+    private static final int REQUEST_CODE_CHOOSE = 0;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         initCallBack();
+        initImageLoader();
         initWebView();
         initView();
 
         mEditorMenuFragment = new EditorMenuFragment();
         mEditorMenuFragment.setActionClickListener(this);
         FragmentManager fm = getSupportFragmentManager();
-        fm.beginTransaction().add(R.id.rl_action, mEditorMenuFragment).commit();
-
-        mWebView.post(new Runnable() {
-            @Override public void run() {
-                mRichEditorAction.insertTable(6, 6);
-            }
-        });
+        fm.beginTransaction()
+            .add(R.id.fl_action, mEditorMenuFragment, EditorMenuFragment.class.getName())
+            .commit();
     }
 
     private void initCallBack() {
-        mRichEditorCallback = new RichEditorCallback() {
-            @Override public void updateActionStates(ActionType type, boolean isActive) {
-                updateButtonStates(type, isActive);
-            }
-        };
+        mRichEditorCallback = new MRichEditorCallback();
     }
 
-    public void updateButtonStates(ActionType type, boolean isActive) {
-        if (mEditorMenuFragment != null) {
-            mEditorMenuFragment.updateActionStates(type, isActive);
+    private void initImageLoader() {
+        ImagePicker imagePicker = ImagePicker.getInstance();
+        imagePicker.setImageLoader(new GlideImageLoader());
+        imagePicker.setShowCamera(true);
+        imagePicker.setCrop(false);
+        imagePicker.setMultiMode(false);
+        imagePicker.setSaveRectangle(true);
+        imagePicker.setStyle(CropImageView.Style.RECTANGLE);
+        imagePicker.setFocusWidth(800);
+        imagePicker.setFocusHeight(800);
+        imagePicker.setOutPutX(256);
+        imagePicker.setOutPutY(256);
+    }
+
+    public void onChangeStyleStates(ActionType selectedStyle, ActionType deselectedStyle) {
+        changeStyleBackground(selectedStyle, true);
+        changeStyleBackground(deselectedStyle, false);
+    }
+
+    private void changeStyleBackground(ActionType style, boolean isSelected) {
+        if (style == null) {
+            return;
         }
-        switch (type) {
-            case BOLD:
-                updateButtonStates(ivBold, isActive);
+
+        if (mEditorMenuFragment != null) {
+            mEditorMenuFragment.updateStyleStates(style, isSelected);
+        }
+
+        switch (style) {
+            case H1:
+                updateButtonStates(ivH1, isSelected);
                 break;
-            case ITALIC:
-                updateButtonStates(ivItalic, isActive);
+            case H2:
+                updateButtonStates(ivH2, isSelected);
                 break;
-            case UNDERLINE:
-                updateButtonStates(ivUnderline, isActive);
-                break;
-            case SUBSCRIPT:
-                updateButtonStates(ivSubScript, isActive);
-                break;
-            case SUPERSCRIPT:
-                updateButtonStates(ivSuperScript, isActive);
-                break;
-            case STRIKETHROUGH:
-                updateButtonStates(ivStrikethrough, isActive);
-                break;
-            case CODEVIEW:
-                updateButtonStates(ivCodeView, isActive);
+            case H3:
+                updateButtonStates(ivH3, isSelected);
                 break;
             default:
                 break;
         }
+    }
+
+    @Override public void onFontSizeChange(double size) {
+        mRichEditorAction.fontSize(size);
+    }
+
+    @Override public void onFontLineHeightChange(double size) {
+        mRichEditorAction.lineHeight(size);
+    }
+
+    @Override public void onFontColorChange(ActionType type, String color) {
+        if (type == ActionType.TEXT_COLOR) {
+            mRichEditorAction.foreColor(color);
+        } else if (type == ActionType.HIGHLIGHT) {
+            mRichEditorAction.backColor(color);
+        }
+    }
+
+    @Override public void onFontFamilyChange(String font) {
+        mRichEditorAction.fontName(font);
     }
 
     @Override public void onActionClick(ActionType type) {
@@ -122,8 +184,62 @@ import com.even.sample.keyboard.KeyboardUtils;
             case STRIKETHROUGH:
                 ivStrikethrough.performClick();
                 break;
+            case JUSTIFY_LEFT:
+                ivJustifyLeft.performClick();
+                break;
+            case JUSTIFY_CENTER:
+                ivJustifyCenter.performClick();
+                break;
+            case JUSTIFY_RIGHT:
+                ivJustifyRight.performClick();
+                break;
+            case JUSTIFY_FULL:
+                ivJustifyFull.performClick();
+                break;
             case CODEVIEW:
                 ivCodeView.performClick();
+                break;
+            case ORDERED:
+                ivOrdered.performClick();
+                break;
+            case UNORDERED:
+                ivUnOrdered.performClick();
+                break;
+            case INDENT:
+                ivIndent.performClick();
+                break;
+            case OUTDENT:
+                ivOutdent.performClick();
+                break;
+            case IMAGE:
+                ivImage.performClick();
+                break;
+            case LINK:
+                ivLink.performClick();
+                break;
+            case TABLE:
+                ivTable.performClick();
+                break;
+            case LINE:
+                ivLine.performClick();
+                break;
+            case BLOCKQUOTE:
+                ivBlockQuote.performClick();
+                break;
+            case CODE_BLOCK:
+                ivCodeBlock.performClick();
+                break;
+            case NORMAL:
+                //TODO
+                break;
+            case H1:
+                ivH1.performClick();
+                break;
+            case H2:
+                ivH2.performClick();
+                break;
+            case H3:
+                ivH3.performClick();
                 break;
             default:
                 break;
@@ -167,240 +283,195 @@ import com.even.sample.keyboard.KeyboardUtils;
     private void initView() {
         mRichEditorAction = new RichEditorAction(mWebView);
         keyboardHeightProvider = new KeyboardHeightProvider(this);
-
-        findViewById(R.id.ll_container).post(new Runnable() {
+        findViewById(R.id.fl_container).post(new Runnable() {
             @Override public void run() {
                 keyboardHeightProvider.start();
             }
         });
+    }
 
-        rlAction = (RelativeLayout) findViewById(R.id.rl_action);
-        findViewById(R.id.iv_action).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                if (rlAction.getVisibility() == View.VISIBLE) {
-                    rlAction.setVisibility(View.GONE);
-                } else {
-                    if (isKeyboardShowing) {
-                        KeyboardUtils.hideSoftInput(RichEditorActivity.this);
-                    }
-                    rlAction.setVisibility(View.VISIBLE);
-                }
+    @OnClick(R.id.iv_action) void onClickAction() {
+        if (flAction.getVisibility() == View.VISIBLE) {
+            flAction.setVisibility(View.GONE);
+        } else {
+            if (isKeyboardShowing) {
+                KeyboardUtils.hideSoftInput(RichEditorActivity.this);
             }
-        });
+            flAction.setVisibility(View.VISIBLE);
+        }
+    }
 
-        findViewById(R.id.iv_keyboard).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
+    @OnClick(R.id.iv_keyboard) void onClickKeyboard() {
 
-            }
-        });
+    }
 
-        findViewById(R.id.iv_action_undo).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.undo();
-            }
-        });
+    @OnClick(R.id.iv_action_undo) void onClickUndo() {
+        mRichEditorAction.undo();
+    }
 
-        findViewById(R.id.iv_action_redo).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.redo();
-            }
-        });
+    @OnClick(R.id.iv_action_redo) void onClickRedo() {
+        mRichEditorAction.redo();
+    }
 
-        ivBold = (ImageView) findViewById(R.id.iv_action_bold);
-        ivBold.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.bold();
-            }
-        });
+    @OnClick(R.id.iv_action_bold) void onClickBold() {
+        mRichEditorAction.bold();
+    }
 
-        ivItalic = (ImageView) findViewById(R.id.iv_action_italic);
-        ivItalic.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.italic();
-            }
-        });
+    @OnClick(R.id.iv_action_italic) void onClickItalic() {
+        mRichEditorAction.italic();
+    }
 
-        ivSubScript = (ImageView) findViewById(R.id.iv_action_subscript);
-        ivSubScript.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.subscript();
-            }
-        });
+    @OnClick(R.id.iv_action_subscript) void onClickSubscript() {
+        mRichEditorAction.subscript();
+    }
 
-        ivSuperScript = (ImageView) findViewById(R.id.iv_action_superscript);
-        ivSuperScript.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.superscript();
-            }
-        });
+    @OnClick(R.id.iv_action_superscript) void onClickSuperscript() {
+        mRichEditorAction.superscript();
+    }
 
-        ivStrikethrough = (ImageView) findViewById(R.id.iv_action_strikethrough);
-        ivStrikethrough.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.strikethrough();
-            }
-        });
+    @OnClick(R.id.iv_action_strikethrough) void onClickStrikethrough() {
+        mRichEditorAction.strikethrough();
+    }
 
-        ivUnderline = (ImageView) findViewById(R.id.iv_action_underline);
-        ivUnderline.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.underline();
-            }
-        });
+    @OnClick(R.id.iv_action_underline) void onClickUnderline() {
+        mRichEditorAction.underline();
+    }
 
-        findViewById(R.id.iv_action_heading1).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.formatH1();
-            }
-        });
+    @OnClick(R.id.iv_action_heading1) void onClickH1() {
+        mRichEditorAction.formatH1();
+    }
 
-        findViewById(R.id.iv_action_heading2).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.formatH2();
-            }
-        });
+    @OnClick(R.id.iv_action_heading2) void onClickH2() {
+        mRichEditorAction.formatH2();
+    }
 
-        findViewById(R.id.iv_action_heading3).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.formatH3();
-            }
-        });
+    @OnClick(R.id.iv_action_heading3) void onClickH3() {
+        mRichEditorAction.formatH3();
+    }
 
-        findViewById(R.id.iv_action_heading4).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.formatH4();
-            }
-        });
+    @OnClick(R.id.iv_action_heading4) void onClickH4() {
+        mRichEditorAction.formatH4();
+    }
 
-        findViewById(R.id.iv_action_heading5).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.formatH5();
-            }
-        });
+    @OnClick(R.id.iv_action_heading5) void onClickH5() {
+        mRichEditorAction.formatH5();
+    }
 
-        findViewById(R.id.iv_action_heading6).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.formatH6();
-            }
-        });
+    @OnClick(R.id.iv_action_heading6) void onClickH6() {
+        mRichEditorAction.formatH6();
+    }
 
-        findViewById(R.id.iv_action_txt_color).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.foreColor("blue");
-            }
-        });
+    @OnClick(R.id.iv_action_txt_color) void onClickTextColor() {
+        mRichEditorAction.foreColor("blue");
+    }
 
-        findViewById(R.id.iv_action_txt_bg_color).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.backColor("red");
-            }
-        });
+    @OnClick(R.id.iv_action_txt_bg_color) void onClickHighlight() {
+        mRichEditorAction.backColor("red");
+    }
 
-        findViewById(R.id.iv_action_indent).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.indent();
-            }
-        });
+    @OnClick(R.id.iv_action_indent) void onClickIndent() {
+        mRichEditorAction.indent();
+    }
 
-        findViewById(R.id.iv_action_outdent).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.outdent();
-            }
-        });
+    @OnClick(R.id.iv_action_outdent) void onClickOutdent() {
+        mRichEditorAction.outdent();
+    }
 
-        findViewById(R.id.iv_action_align_left).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.justifyLeft();
-            }
-        });
+    @OnClick(R.id.iv_action_justify_left) void onClickJustifyLeft() {
+        mRichEditorAction.justifyLeft();
+    }
 
-        findViewById(R.id.iv_action_align_right).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.justifyRight();
-            }
-        });
+    @OnClick(R.id.iv_action_justify_center) void onClickJustifyCenter() {
+        mRichEditorAction.justifyCenter();
+    }
 
-        findViewById(R.id.iv_action_align_center).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.justifyCenter();
-            }
-        });
+    @OnClick(R.id.iv_action_justify_right) void onClickJustifyRight() {
+        mRichEditorAction.justifyRight();
+    }
 
-        findViewById(R.id.iv_action_align_all).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.justifyFull();
-            }
-        });
+    @OnClick(R.id.iv_action_justify_full) void onClickJustifyFull() {
+        mRichEditorAction.justifyFull();
+    }
 
-        findViewById(R.id.iv_action_blockquote).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.formatBlockquote();
-            }
-        });
+    @OnClick(R.id.iv_action_insert_bullets) void onClickUnOrdered() {
+        mRichEditorAction.insertUnorderedList();
+    }
 
-        findViewById(R.id.iv_action_insert_bullets).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.insertUnorderedList();
-            }
-        });
+    @OnClick(R.id.iv_action_insert_numbers) void onClickOrdered() {
+        mRichEditorAction.insertOrderedList();
+    }
 
-        findViewById(R.id.iv_action_insert_numbers).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.insertOrderedList();
-            }
-        });
+    @OnClick(R.id.iv_action_code_view) void onClickCodeView() {
+        mRichEditorAction.codeReview();
+    }
 
-        findViewById(R.id.iv_action_insert_image).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
+    @OnClick(R.id.iv_action_line_height) void onClickLineHeight() {
+        mRichEditorAction.lineHeight(20);
+    }
+
+    @OnClick(R.id.iv_action_insert_image) void onClickInsertImage() {
+        Intent intent = new Intent(this, ImageGridActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_CHOOSE);
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == ImagePicker.RESULT_CODE_ITEMS
+            && data != null
+            && requestCode == REQUEST_CODE_CHOOSE) {
+            ArrayList<ImageItem> images =
+                (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
+            if (images != null && !images.isEmpty()) {
+                //TODO
                 mRichEditorAction.insertImage(
                     "https://avatars0.githubusercontent.com/u/5581118?v=4&u=b7ea903e397678b3675e2a15b0b6d0944f6f129e&s=400");
             }
-        });
+        }
+    }
 
-        findViewById(R.id.iv_action_insert_link).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.createLink("Even",
-                    "https://avatars0.githubusercontent.com/u/5581118?v=4&u=b7ea903e397678b3675e2a15b0b6d0944f6f129e&s=400");
+    @OnClick(R.id.iv_action_insert_link) void onClickInsertLink() {
+        KeyboardUtils.hideSoftInput(RichEditorActivity.this);
+        EditHyperlinkFragment fragment = new EditHyperlinkFragment();
+        fragment.setOnHyperlinkListener(new EditHyperlinkFragment.OnHyperlinkListener() {
+            @Override public void onHyperlinkOK(String address, String text) {
+                mRichEditorAction.createLink(text, address);
             }
         });
+        getSupportFragmentManager().beginTransaction()
+            .add(R.id.fl_container, fragment, EditHyperlinkFragment.class.getName())
+            .commit();
+    }
 
-        ivCodeView = (ImageView) findViewById(R.id.iv_action_code_view);
-        ivCodeView.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.codeReview();
+    @OnClick(R.id.iv_action_table) void onClickInsertTable() {
+        KeyboardUtils.hideSoftInput(RichEditorActivity.this);
+        EditTableFragment fragment = new EditTableFragment();
+        fragment.setOnTableListener(new EditTableFragment.OnTableListener() {
+            @Override public void onTableOK(int rows, int cols) {
+                mRichEditorAction.insertTable(rows, cols);
             }
         });
+        getSupportFragmentManager().beginTransaction()
+            .add(R.id.fl_container, fragment, EditHyperlinkFragment.class.getName())
+            .commit();
+    }
 
-        findViewById(R.id.iv_action_table).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.insertTable(3, 7);
-            }
-        });
+    @OnClick(R.id.iv_action_line) void onClickInsertLine() {
+        mRichEditorAction.insertHorizontalRule();
+    }
 
-        findViewById(R.id.iv_action_line_height).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.lineHeight(20);
-            }
-        });
+    @OnClick(R.id.iv_action_blockquote) void onClickBlockQuote() {
+        mRichEditorAction.formatBlockquote();
+    }
 
-        findViewById(R.id.iv_action_line).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.insertHorizontalRule();
-            }
-        });
-
-        findViewById(R.id.iv_action_code_block).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mRichEditorAction.formatBlockCode();
-            }
-        });
+    @OnClick(R.id.iv_action_code_block) void onClickCodeBlock() {
+        mRichEditorAction.formatBlockCode();
     }
 
     @Override public void onPause() {
         super.onPause();
         keyboardHeightProvider.setKeyboardHeightObserver(null);
-        if (rlAction.getVisibility() == View.INVISIBLE) {
-            rlAction.setVisibility(View.GONE);
+        if (flAction.getVisibility() == View.INVISIBLE) {
+            flAction.setVisibility(View.GONE);
         }
     }
 
@@ -417,12 +488,135 @@ import com.even.sample.keyboard.KeyboardUtils;
     @Override public void onKeyboardHeightChanged(int height, int orientation) {
         isKeyboardShowing = height > 0;
         if (height != 0) {
-            rlAction.setVisibility(View.INVISIBLE);
-            ViewGroup.LayoutParams params = rlAction.getLayoutParams();
+            flAction.setVisibility(View.INVISIBLE);
+            ViewGroup.LayoutParams params = flAction.getLayoutParams();
             params.height = height;
-            rlAction.setLayoutParams(params);
-        } else if (rlAction.getVisibility() != View.VISIBLE) {
-            rlAction.setVisibility(View.GONE);
+            flAction.setLayoutParams(params);
+        } else if (flAction.getVisibility() != View.VISIBLE) {
+            flAction.setVisibility(View.GONE);
+        }
+    }
+
+    class MRichEditorCallback extends RichEditorCallback {
+
+        @Override public void notifyFontFamilyChange(String fontFamily) {
+            updateFontFamilyStates(fontFamily);
+        }
+
+        @Override public void notifyJustifyChange(ActionType type) {
+            updateJustifyStates(type);
+        }
+
+        @Override public void notifyFontSizeChange(double fontSize) {
+            updateFontSizeStates(fontSize);
+        }
+
+        @Override public void notifyLineHeightChange(double lineHeight) {
+            updateLineHeightStates(lineHeight);
+        }
+
+        @Override public void notifyBoldChange(boolean isBold) {
+            updateButtonStates(ActionType.BOLD, isBold);
+        }
+
+        @Override public void notifyItalicChange(boolean isItalic) {
+            updateButtonStates(ActionType.ITALIC, isItalic);
+        }
+
+        @Override public void notifyUnderlineChange(boolean isUnderline) {
+            updateButtonStates(ActionType.UNDERLINE, isUnderline);
+        }
+
+        @Override public void notifySubscriptChange(boolean isSubscript) {
+            updateButtonStates(ActionType.SUBSCRIPT, isSubscript);
+        }
+
+        @Override public void notifySuperscriptChange(boolean isSuperscript) {
+            updateButtonStates(ActionType.SUPERSCRIPT, isSuperscript);
+        }
+
+        @Override public void notifyStrikethroughChange(boolean isStrikethrough) {
+            updateButtonStates(ActionType.STRIKETHROUGH, isStrikethrough);
+        }
+
+        @Override public void notifyListStyleChange(ActionType type) {
+            updateListStyleStates(type);
+        }
+    }
+
+    private void updateFontFamilyStates(String font) {
+        if (mEditorMenuFragment != null) {
+            mEditorMenuFragment.updateFontFamilyStates(font);
+        }
+    }
+
+    private void updateFontSizeStates(double fontSize) {
+        if (mEditorMenuFragment != null) {
+            mEditorMenuFragment.updateFontStates(ActionType.SIZE, fontSize);
+        }
+    }
+
+    private void updateLineHeightStates(double lineHeightSize) {
+        if (mEditorMenuFragment != null) {
+            mEditorMenuFragment.updateFontStates(ActionType.LINE_HEIGHT, lineHeightSize);
+        }
+    }
+
+    private void updateJustifyStates(ActionType type) {
+        if (mEditorMenuFragment != null) {
+            mEditorMenuFragment.updateActionStates(ActionType.JUSTIFY_LEFT,
+                type == ActionType.JUSTIFY_LEFT);
+            mEditorMenuFragment.updateActionStates(ActionType.JUSTIFY_CENTER,
+                type == ActionType.JUSTIFY_CENTER);
+            mEditorMenuFragment.updateActionStates(ActionType.JUSTIFY_RIGHT,
+                type == ActionType.JUSTIFY_RIGHT);
+            mEditorMenuFragment.updateActionStates(ActionType.JUSTIFY_FULL,
+                type == ActionType.JUSTIFY_FULL);
+        }
+        updateButtonStates(ivJustifyLeft, type == ActionType.JUSTIFY_LEFT);
+        updateButtonStates(ivJustifyCenter, type == ActionType.JUSTIFY_CENTER);
+        updateButtonStates(ivJustifyRight, type == ActionType.JUSTIFY_RIGHT);
+        updateButtonStates(ivJustifyFull, type == ActionType.JUSTIFY_FULL);
+    }
+
+    private void updateListStyleStates(ActionType type) {
+        if (mEditorMenuFragment != null) {
+            mEditorMenuFragment.updateActionStates(ActionType.UNORDERED,
+                type == ActionType.UNORDERED);
+            mEditorMenuFragment.updateActionStates(ActionType.ORDERED, type == ActionType.ORDERED);
+        }
+        updateButtonStates(ivUnOrdered, type == ActionType.UNORDERED);
+        updateButtonStates(ivOrdered, type == ActionType.ORDERED);
+    }
+
+    public void updateButtonStates(ActionType type, boolean isActive) {
+        if (mEditorMenuFragment != null) {
+            mEditorMenuFragment.updateActionStates(type, isActive);
+        }
+        switch (type) {
+            case BOLD:
+                updateButtonStates(ivBold, isActive);
+                break;
+            case ITALIC:
+                updateButtonStates(ivItalic, isActive);
+                break;
+            case UNDERLINE:
+                updateButtonStates(ivUnderline, isActive);
+                break;
+            case SUBSCRIPT:
+                updateButtonStates(ivSubScript, isActive);
+                break;
+            case SUPERSCRIPT:
+                updateButtonStates(ivSuperScript, isActive);
+                break;
+            case STRIKETHROUGH:
+                updateButtonStates(ivStrikethrough, isActive);
+                break;
+            case CODEVIEW:
+                updateButtonStates(ivCodeView, isActive);
+                break;
+            default:
+                break;
         }
     }
 }

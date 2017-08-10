@@ -64,12 +64,12 @@ public class RichEditorAction {
         load("javascript:foreColor('" + color + "')");
     }
 
-    public void foreName(String fontName) {
+    public void fontName(String fontName) {
         load("javascript:fontName('" + fontName + "')");
     }
 
-    public void foreSize(double foreSize) {
-        load("javascript:foreSize(" + foreSize + ")");
+    public void fontSize(double foreSize) {
+        load("javascript:fontSize(" + foreSize + ")");
     }
 
     /******************** Paragraph ********************/

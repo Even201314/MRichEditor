@@ -12,4 +12,9 @@
   <string name="font_style_heading_2">Heading 2</string>
   <string name="font_style_heading_3">Heading 3</string>
   <string name="font_insert">Insert</string>
+  <string name="edit_hyperlink">Edit Hyperlink</string>
+  <string name="address">Address:</string>
+  <string name="text_to_display">Text to display:</string>
+  <string name="ok">OK</string>
+  <string name="edit_table">Edit Table</string>
 </resources>

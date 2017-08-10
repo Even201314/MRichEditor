@@ -6446,6 +6446,7 @@
 
     this.updateCurrentStyle = function () {
       var styleInfo = context.invoke('editor.currentStyle');
+      RichEditor.updateCurrentStyle(JSON.stringify(styleInfo));
       this.updateBtnStates({
         '.note-btn-bold': function () {
           return styleInfo['font-bold'] === 'bold';
@@ -6507,7 +6508,6 @@
       $.each(infos, function (selector, pred) {
         var isActive = pred();
         ui.toggleBtnActive($toolbar.find(selector), isActive);
-        RichEditor.updateAction(selector, isActive);
       });
     };
 
@@ -6595,7 +6595,6 @@
 
     this.updateCodeview = function (isCodeview) {
       ui.toggleBtnActive($toolbar.find('.btn-codeview'), isCodeview);
-      RichEditor.updateAction('.btn-codeview', isCodeview);
       if (isCodeview) {
         this.deactivate();
       } else {

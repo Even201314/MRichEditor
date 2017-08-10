@@ -73,7 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="46dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/round_rectangle"
+            android:background="@drawable/round_rectangle_white"
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingBottom="6dp"
@@ -151,64 +151,16 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="8dp"
+          android:background="@drawable/round_rectangle_white"
           android:gravity="center"
           android:orientation="horizontal"
           >
 
-        <LinearLayout
-            android:layout_width="0dp"
+        <com.even.sample.widget.ColorPaletteView
+            android:id="@+id/cpv_font_text_color"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/round_rectangle"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            >
-
-          <com.even.sample.widget.RoundView
-              android:id="@+id/rv_font_color_black"
-              android:layout_width="20dp"
-              android:layout_height="20dp"
-              app:backgroundColor="@color/black"
-              />
-
-          <com.even.sample.widget.RoundView
-              android:id="@+id/rv_font_color_blue"
-              android:layout_width="20dp"
-              android:layout_height="20dp"
-              android:layout_marginLeft="32dp"
-              android:layout_marginStart="32dp"
-              app:backgroundColor="@color/blue"
-              />
-
-          <com.even.sample.widget.RoundView
-              android:id="@+id/rv_font_color_green"
-              android:layout_width="20dp"
-              android:layout_height="20dp"
-              android:layout_marginLeft="32dp"
-              android:layout_marginStart="32dp"
-              app:backgroundColor="@color/green"
-              />
-
-          <com.even.sample.widget.RoundView
-              android:id="@+id/rv_font_color_yellow"
-              android:layout_width="20dp"
-              android:layout_height="20dp"
-              android:layout_marginLeft="32dp"
-              android:layout_marginStart="32dp"
-              app:backgroundColor="@color/yellow"
-              />
-
-          <com.even.sample.widget.RoundView
-              android:id="@+id/rv_font_color_red"
-              android:layout_width="20dp"
-              android:layout_height="20dp"
-              android:layout_marginLeft="32dp"
-              android:layout_marginStart="32dp"
-              app:backgroundColor="@color/red"
-              />
-
-        </LinearLayout>
+            />
 
       </LinearLayout>
 
@@ -229,60 +181,15 @@
           android:orientation="horizontal"
           >
 
-        <LinearLayout
+        <com.even.sample.widget.ColorPaletteView
+            android:id="@+id/cpv_highlight_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/round_rectangle"
+            android:background="@drawable/round_rectangle_white"
             android:gravity="center"
             android:orientation="horizontal"
-            android:padding="16dp"
-            >
-
-          <com.even.sample.widget.RoundView
-              android:id="@+id/rv_font_highlight_color_black"
-              android:layout_width="20dp"
-              android:layout_height="20dp"
-              app:backgroundColor="@color/black"
-              />
-
-          <com.even.sample.widget.RoundView
-              android:id="@+id/rv_font_highlight_color_blue"
-              android:layout_width="20dp"
-              android:layout_height="20dp"
-              android:layout_marginLeft="32dp"
-              android:layout_marginStart="32dp"
-              app:backgroundColor="@color/blue"
-              />
-
-          <com.even.sample.widget.RoundView
-              android:id="@+id/rv_font_highlight_color_green"
-              android:layout_width="20dp"
-              android:layout_height="20dp"
-              android:layout_marginLeft="32dp"
-              android:layout_marginStart="32dp"
-              app:backgroundColor="@color/green"
-              />
-
-          <com.even.sample.widget.RoundView
-              android:id="@+id/rv_font_highlight_color_yellow"
-              android:layout_width="20dp"
-              android:layout_height="20dp"
-              android:layout_marginLeft="32dp"
-              android:layout_marginStart="32dp"
-              app:backgroundColor="@color/yellow"
-              />
-
-          <com.even.sample.widget.RoundView
-              android:id="@+id/rv_font_highlight_color_red"
-              android:layout_width="20dp"
-              android:layout_height="20dp"
-              android:layout_marginLeft="32dp"
-              android:layout_marginStart="32dp"
-              app:backgroundColor="@color/red"
-              />
-
-        </LinearLayout>
+            />
 
         <TextView
             android:id="@+id/tv_font_color_auto"
@@ -290,7 +197,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
-            android:background="@drawable/round_rectangle"
+            android:background="@drawable/round_rectangle_white"
             android:gravity="center"
             android:paddingEnd="16dp"
             android:paddingLeft="16dp"
@@ -314,9 +221,10 @@
         >
 
       <LinearLayout
+          android:id="@+id/ll_line_height"
           android:layout_width="wrap_content"
           android:layout_height="match_parent"
-          android:background="@drawable/round_rectangle"
+          android:background="@drawable/btn_white_round_rectangle"
           android:gravity="center"
           android:orientation="vertical"
           >
@@ -350,7 +258,7 @@
           android:layout_marginLeft="8dp"
           android:layout_marginStart="8dp"
           android:layout_weight="1"
-          android:background="@drawable/round_rectangle"
+          android:background="@drawable/round_rectangle_white"
           android:gravity="center"
           android:orientation="horizontal"
           android:paddingBottom="16dp"
@@ -358,7 +266,7 @@
           >
 
         <ImageView
-            android:id="@+id/iv_action_align_left"
+            android:id="@+id/iv_action_justify_left"
             android:background="@drawable/btn_white_material"
             android:padding="10dp"
             android:src="@drawable/ic_format_align_left"
@@ -366,7 +274,7 @@
             />
 
         <ImageView
-            android:id="@+id/iv_action_align_center"
+            android:id="@+id/iv_action_justify_center"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:background="@drawable/btn_white_material"
@@ -376,7 +284,7 @@
             />
 
         <ImageView
-            android:id="@+id/iv_action_align_right"
+            android:id="@+id/iv_action_justify_right"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:background="@drawable/btn_white_material"
@@ -386,7 +294,7 @@
             />
 
         <ImageView
-            android:id="@+id/iv_action_align_all"
+            android:id="@+id/iv_action_justify_full"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:background="@drawable/btn_white_material"
@@ -409,10 +317,11 @@
         >
 
       <LinearLayout
+          android:id="@+id/ll_normal"
           android:layout_width="0dp"
           android:layout_height="match_parent"
           android:layout_weight="1"
-          android:background="@drawable/round_rectangle"
+          android:background="@drawable/round_rectangle_white"
           android:gravity="center"
           android:orientation="vertical"
           android:paddingBottom="8dp"
@@ -444,12 +353,13 @@
       </LinearLayout>
 
       <LinearLayout
+          android:id="@+id/ll_h1"
           android:layout_width="0dp"
           android:layout_height="match_parent"
           android:layout_marginLeft="8dp"
           android:layout_marginStart="8dp"
           android:layout_weight="1"
-          android:background="@drawable/round_rectangle"
+          android:background="@drawable/round_rectangle_white"
           android:gravity="center"
           android:orientation="vertical"
           android:paddingBottom="8dp"
@@ -481,12 +391,13 @@
       </LinearLayout>
 
       <LinearLayout
+          android:id="@+id/ll_h2"
           android:layout_width="0dp"
           android:layout_height="match_parent"
           android:layout_marginLeft="8dp"
           android:layout_marginStart="8dp"
           android:layout_weight="1"
-          android:background="@drawable/round_rectangle"
+          android:background="@drawable/round_rectangle_white"
           android:gravity="center"
           android:orientation="vertical"
           android:paddingBottom="8dp"
@@ -519,12 +430,13 @@
       </LinearLayout>
 
       <LinearLayout
+          android:id="@+id/ll_h3"
           android:layout_width="0dp"
           android:layout_height="match_parent"
           android:layout_marginLeft="8dp"
           android:layout_marginStart="8dp"
           android:layout_weight="1"
-          android:background="@drawable/round_rectangle"
+          android:background="@drawable/round_rectangle_white"
           android:gravity="center"
           android:orientation="vertical"
           android:paddingBottom="8dp"
@@ -571,7 +483,7 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:background="@drawable/round_rectangle"
+          android:background="@drawable/round_rectangle_white"
           android:gravity="center"
           android:orientation="horizontal"
           android:paddingBottom="8dp"
@@ -605,7 +517,7 @@
           android:layout_marginLeft="8dp"
           android:layout_marginStart="8dp"
           android:layout_weight="1"
-          android:background="@drawable/round_rectangle"
+          android:background="@drawable/round_rectangle_white"
           android:gravity="center"
           android:orientation="horizontal"
           android:paddingBottom="8dp"
@@ -647,7 +559,7 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:background="@drawable/round_rectangle"
+          android:background="@drawable/round_rectangle_white"
           android:gravity="center"
           android:orientation="horizontal"
           android:paddingBottom="8dp"
@@ -680,7 +592,7 @@
           android:layout_marginLeft="8dp"
           android:layout_marginStart="8dp"
           android:layout_weight="1"
-          android:background="@drawable/round_rectangle"
+          android:background="@drawable/round_rectangle_white"
           android:gravity="center"
           android:orientation="horizontal"
           android:paddingBottom="8dp"
@@ -730,7 +642,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="4dp"
-          android:background="@drawable/round_rectangle"
+          android:background="@drawable/round_rectangle_white"
           android:gravity="center"
           android:orientation="horizontal"
           android:padding="8dp"
@@ -800,7 +712,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="8dp"
-          android:background="@drawable/round_rectangle"
+          android:background="@drawable/round_rectangle_white"
           android:gravity="center"
           android:orientation="horizontal"
           android:paddingBottom="8dp"

@@ -4,6 +4,7 @@ var initSummernote = function(){
         callbacks: {
             onInit: function(e) {
                 $("#summernote").summernote("fullscreen.toggle");
+                $('#summernote').summernote('fontName', 'Helvetica Neue');
             }
         }
     });
@@ -102,26 +103,32 @@ var formatBlock = function(tagName) {
 };
 
 var formatH1 = function() {
+    RichEditor.onChangeStyle('H1');
     $('#summernote').summernote('formatH1');
 };
 
 var formatH2 = function() {
+    RichEditor.onChangeStyle('H2');
     $('#summernote').summernote('formatH2');
 };
 
 var formatH3 = function() {
+    RichEditor.onChangeStyle('H3');
     $('#summernote').summernote('formatH3');
 };
 
 var formatH4 = function() {
+    RichEditor.onChangeStyle('H4');
     $('#summernote').summernote('formatH4');
 };
 
 var formatH5 = function() {
+    RichEditor.onChangeStyle('H5');
     $('#summernote').summernote('formatH5');
 };
 
 var formatH6 = function() {
+    RichEditor.onChangeStyle('H6');
     $('#summernote').summernote('formatH6');
 };
 
