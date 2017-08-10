@@ -420,20 +420,11 @@ public class EditorMenuFragment extends Fragment {
         });
     }
 
-    public void updateStyleStates(ActionType type, boolean isActive) {
-        switch (type) {
-            case H1:
-                changeStyleBackground(llH1, isActive);
-                break;
-            case H2:
-                changeStyleBackground(llH2, isActive);
-                break;
-            case H3:
-                changeStyleBackground(llH3, isActive);
-                break;
-            default:
-                break;
-        }
+    public void updateStyleStates(ActionType type) {
+        changeStyleBackground(llNormal, type == ActionType.NORMAL);
+        changeStyleBackground(llH1, type == ActionType.H1);
+        changeStyleBackground(llH2, type == ActionType.H2);
+        changeStyleBackground(llH3, type == ActionType.H3);
     }
 
     private void updateButtonStates(final ImageView iv, final boolean isActive) {

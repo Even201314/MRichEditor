@@ -115,35 +115,6 @@ import java.util.ArrayList;
         imagePicker.setOutPutY(256);
     }
 
-    public void onChangeStyleStates(ActionType selectedStyle, ActionType deselectedStyle) {
-        changeStyleBackground(selectedStyle, true);
-        changeStyleBackground(deselectedStyle, false);
-    }
-
-    private void changeStyleBackground(ActionType style, boolean isSelected) {
-        if (style == null) {
-            return;
-        }
-
-        if (mEditorMenuFragment != null) {
-            mEditorMenuFragment.updateStyleStates(style, isSelected);
-        }
-
-        switch (style) {
-            case H1:
-                updateButtonStates(ivH1, isSelected);
-                break;
-            case H2:
-                updateButtonStates(ivH2, isSelected);
-                break;
-            case H3:
-                updateButtonStates(ivH3, isSelected);
-                break;
-            default:
-                break;
-        }
-    }
-
     @Override public void onFontSizeChange(double size) {
         mRichEditorAction.fontSize(size);
     }
@@ -230,7 +201,7 @@ import java.util.ArrayList;
                 ivCodeBlock.performClick();
                 break;
             case NORMAL:
-                //TODO
+                mRichEditorAction.formatPara();
                 break;
             case H1:
                 ivH1.performClick();
@@ -539,8 +510,18 @@ import java.util.ArrayList;
             updateButtonStates(ActionType.STRIKETHROUGH, isStrikethrough);
         }
 
+        @Override public void notifyFontBlockChange(ActionType type) {
+            updateFontBlockStates(type);
+        }
+
         @Override public void notifyListStyleChange(ActionType type) {
             updateListStyleStates(type);
+        }
+    }
+
+    private void updateFontBlockStates(ActionType type) {
+        if (mEditorMenuFragment != null) {
+            mEditorMenuFragment.updateStyleStates(type);
         }
     }
 

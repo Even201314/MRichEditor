@@ -65,6 +65,10 @@ public abstract class RichEditorCallback {
             notifyStrikethroughChange(fontStyle.isStrikethrough());
         }
 
+        if (mFontStyle.getFontBlock() != fontStyle.getFontBlock()) {
+            notifyFontBlockChange(fontStyle.getFontBlock());
+        }
+
         if (mFontStyle.getListStyle() != fontStyle.getListStyle()) {
             notifyListStyleChange(fontStyle.getListStyle());
         }
@@ -91,6 +95,8 @@ public abstract class RichEditorCallback {
     public abstract void notifySuperscriptChange(boolean isSuperscript);
 
     public abstract void notifyStrikethroughChange(boolean isStrikethrough);
+
+    public abstract void notifyFontBlockChange(ActionType type);
 
     public abstract void notifyListStyleChange(ActionType type);
 }

@@ -3437,7 +3437,8 @@
           'font-subscript': document.queryCommandState('subscript') ? 'subscript' : 'normal',
           'font-superscript': document.queryCommandState('superscript') ? 'superscript' : 'normal',
           'font-strikethrough': document.queryCommandState('strikethrough') ? 'strikethrough' : 'normal',
-          'font-family': document.queryCommandValue('fontname') || styleInfo['font-family']
+          'font-family': document.queryCommandValue('fontname') || styleInfo['font-family'],
+          'font-block': document.queryCommandValue('formatblock'),
         });
       } catch (e) {}
 

@@ -40,6 +40,7 @@ public class FontStyle {
     @SerializedName("font-subscript") private String fontSubscript;
     @SerializedName("font-superscript") private String fontSuperscript;
     @SerializedName("font-strikethrough") private String fontStrikethrough;
+    @SerializedName("font-block") private String fontBlock;
     @SerializedName("list-style") private String listStyle;
     private boolean anchor;
     private RangeBean range;
@@ -98,6 +99,31 @@ public class FontStyle {
         return height;
     }
 
+    public ActionType getFontBlock() {
+        if (TextUtils.isEmpty(fontBlock)) {
+            return null;
+        }
+        ActionType type = null;
+
+        if ("p".equals(fontBlock)) {
+            type = ActionType.NORMAL;
+        } else if ("h1".equals(fontBlock)) {
+            type = ActionType.H1;
+        } else if ("h2".equals(fontBlock)) {
+            type = ActionType.H2;
+        } else if ("h3".equals(fontBlock)) {
+            type = ActionType.H3;
+        } else if ("h4".equals(fontBlock)) {
+            type = ActionType.H4;
+        } else if ("h5".equals(fontBlock)) {
+            type = ActionType.H5;
+        } else if ("h6".equals(fontBlock)) {
+            type = ActionType.H6;
+        }
+
+        return type;
+    }
+
     public boolean isBold() {
         return "bold".equals(fontBold);
     }
@@ -123,10 +149,10 @@ public class FontStyle {
     }
 
     public ActionType getListStyle() {
-        ActionType type = null;
         if (TextUtils.isEmpty(listStyle)) {
-            return type;
+            return null;
         }
+        ActionType type = null;
 
         if ("ordered".equals(listStyle)) {
             type = ActionType.ORDERED;

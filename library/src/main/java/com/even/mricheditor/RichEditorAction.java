@@ -105,6 +105,10 @@ public class RichEditorAction {
         load("javascript:outdent()");
     }
 
+    public void formatPara() {
+        load("javascript:formatPara()");
+    }
+
     public void formatH1() {
         load("javascript:formatH1()");
     }
