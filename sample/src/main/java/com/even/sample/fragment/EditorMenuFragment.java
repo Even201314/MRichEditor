@@ -61,9 +61,13 @@ public class EditorMenuFragment extends Fragment {
     @BindView(R.id.ll_h1) LinearLayout llH1;
     @BindView(R.id.ll_h2) LinearLayout llH2;
     @BindView(R.id.ll_h3) LinearLayout llH3;
+    @BindView(R.id.ll_h4) LinearLayout llH4;
+    @BindView(R.id.ll_h5) LinearLayout llH5;
+    @BindView(R.id.ll_h6) LinearLayout llH6;
 
     @BindView(R.id.cpv_font_text_color) ColorPaletteView cpvFontTextColor;
     @BindView(R.id.cpv_highlight_color) ColorPaletteView cpvHighlightColor;
+    @BindView(R.id.tv_font_color_auto) TextView tvHighlightNone;
 
     private OnActionClickListener mActionClickListener;
 
@@ -95,6 +99,14 @@ public class EditorMenuFragment extends Fragment {
             @Override public void onColorChange(String color) {
                 if (mActionClickListener != null) {
                     mActionClickListener.onFontColorChange(ActionType.HIGHLIGHT, color);
+                }
+            }
+        });
+
+        tvHighlightNone.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                if (mActionClickListener != null) {
+                    mActionClickListener.onFontColorChange(ActionType.HIGHLIGHT, "#FFFFFF");
                 }
             }
         });
@@ -310,6 +322,30 @@ public class EditorMenuFragment extends Fragment {
                 }
             }
         });
+
+        llH4.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                if (mActionClickListener != null) {
+                    mActionClickListener.onActionClick(ActionType.H4);
+                }
+            }
+        });
+
+        llH5.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                if (mActionClickListener != null) {
+                    mActionClickListener.onActionClick(ActionType.H5);
+                }
+            }
+        });
+
+        llH6.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                if (mActionClickListener != null) {
+                    mActionClickListener.onActionClick(ActionType.H6);
+                }
+            }
+        });
     }
 
     private void openFontSettingFragment(final int type) {
@@ -459,6 +495,9 @@ public class EditorMenuFragment extends Fragment {
         changeStyleBackground(llH1, type == ActionType.H1);
         changeStyleBackground(llH2, type == ActionType.H2);
         changeStyleBackground(llH3, type == ActionType.H3);
+        changeStyleBackground(llH4, type == ActionType.H4);
+        changeStyleBackground(llH5, type == ActionType.H5);
+        changeStyleBackground(llH6, type == ActionType.H6);
     }
 
     private void updateButtonStates(final ImageView iv, final boolean isActive) {

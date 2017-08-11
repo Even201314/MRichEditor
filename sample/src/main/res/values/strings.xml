@@ -17,4 +17,7 @@
   <string name="text_to_display">Text to display:</string>
   <string name="ok">OK</string>
   <string name="edit_table">Edit Table</string>
+  <string name="heading_4">Heading 4</string>
+  <string name="heading_5">Heading 5</string>
+  <string name="heading_6">Heading 6</string>
 </resources>

@@ -30,96 +30,75 @@ public abstract class RichEditorCallback {
             .equals(fontStyle.getFontFamily())) {
             if (!TextUtils.isEmpty(fontStyle.getFontFamily())) {
                 String font = fontStyle.getFontFamily().split(",")[0].replace("\"", "");
-                notifyFontFamilyChange(font);
+                notifyFontStyleChange(ActionType.FAMILY, font);
             }
         }
 
         if (mFontStyle.getFontForeColor() == null || !mFontStyle.getFontForeColor()
             .equals(fontStyle.getFontForeColor())) {
             if (!TextUtils.isEmpty(fontStyle.getFontForeColor())) {
-                notifyFontColorChange(ActionType.FORE_COLOR, fontStyle.getFontForeColor());
+                notifyFontStyleChange(ActionType.FORE_COLOR, fontStyle.getFontForeColor());
             }
         }
 
         if (mFontStyle.getFontBackColor() == null || !mFontStyle.getFontBackColor()
             .equals(fontStyle.getFontBackColor())) {
             if (!TextUtils.isEmpty(fontStyle.getFontBackColor())) {
-                notifyFontColorChange(ActionType.BACK_COLOR, fontStyle.getFontBackColor());
+                notifyFontStyleChange(ActionType.BACK_COLOR, fontStyle.getFontBackColor());
             }
         }
 
         if (mFontStyle.getFontSize() != fontStyle.getFontSize()) {
-            notifyFontSizeChange(fontStyle.getFontSize());
+            notifyFontStyleChange(ActionType.SIZE, String.valueOf(fontStyle.getFontSize()));
         }
 
         if (mFontStyle.getTextAlign() != fontStyle.getTextAlign()) {
-            notifyJustifyChange(fontStyle.getTextAlign());
+            notifyFontStyleChange(fontStyle.getTextAlign(), null);
         }
 
         if (mFontStyle.getLineHeight() != fontStyle.getLineHeight()) {
-            notifyLineHeightChange(fontStyle.getLineHeight());
+            notifyFontStyleChange(ActionType.LINE_HEIGHT,
+                String.valueOf(fontStyle.getLineHeight()));
         }
 
         if (mFontStyle.isBold() != fontStyle.isBold()) {
-            notifyBoldChange(fontStyle.isBold());
+            notifyFontStyleChange(ActionType.BOLD, String.valueOf(fontStyle.isBold()));
         }
 
         if (mFontStyle.isItalic() != fontStyle.isItalic()) {
-            notifyItalicChange(fontStyle.isItalic());
+            notifyFontStyleChange(ActionType.ITALIC, String.valueOf(fontStyle.isItalic()));
         }
 
         if (mFontStyle.isUnderline() != fontStyle.isUnderline()) {
-            notifyUnderlineChange(fontStyle.isUnderline());
+            notifyFontStyleChange(ActionType.UNDERLINE, String.valueOf(fontStyle.isUnderline()));
         }
 
         if (mFontStyle.isSubscript() != fontStyle.isSubscript()) {
-            notifySubscriptChange(fontStyle.isSubscript());
+            notifyFontStyleChange(ActionType.SUBSCRIPT, String.valueOf(fontStyle.isSubscript()));
         }
 
         if (mFontStyle.isSuperscript() != fontStyle.isSuperscript()) {
-            notifySuperscriptChange(fontStyle.isSuperscript());
+            notifyFontStyleChange(ActionType.SUPERSCRIPT,
+                String.valueOf(fontStyle.isSuperscript()));
         }
 
         if (mFontStyle.isStrikethrough() != fontStyle.isStrikethrough()) {
-            notifyStrikethroughChange(fontStyle.isStrikethrough());
+            notifyFontStyleChange(ActionType.STRIKETHROUGH,
+                String.valueOf(fontStyle.isStrikethrough()));
         }
 
         if (mFontStyle.getFontBlock() != fontStyle.getFontBlock()) {
-            notifyFontBlockChange(fontStyle.getFontBlock());
+            notifyFontStyleChange(fontStyle.getFontBlock(), null);
         }
 
         if (mFontStyle.getListStyle() != fontStyle.getListStyle()) {
-            notifyListStyleChange(fontStyle.getListStyle());
+            notifyFontStyleChange(fontStyle.getListStyle(), null);
         }
 
         mFontStyle = fontStyle;
     }
 
-    public abstract void notifyFontFamilyChange(String fontFamily);
-
-    public abstract void notifyFontColorChange(ActionType type, String color);
-
-    public abstract void notifyJustifyChange(ActionType type);
-
-    public abstract void notifyFontSizeChange(double fontSize);
-
-    public abstract void notifyLineHeightChange(double lineHeight);
-
-    public abstract void notifyBoldChange(boolean isBold);
-
-    public abstract void notifyItalicChange(boolean isItalic);
-
-    public abstract void notifyUnderlineChange(boolean isUnderline);
-
-    public abstract void notifySubscriptChange(boolean isSubscript);
-
-    public abstract void notifySuperscriptChange(boolean isSuperscript);
-
-    public abstract void notifyStrikethroughChange(boolean isStrikethrough);
-
-    public abstract void notifyFontBlockChange(ActionType type);
-
-    public abstract void notifyListStyleChange(ActionType type);
+    public abstract void notifyFontStyleChange(ActionType type, String value);
 
     public String getHtml() {
         return html;

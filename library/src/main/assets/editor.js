@@ -10,6 +10,10 @@ var initSummernote = function(){
     });
 }
 
+var focus = function(){
+    $('#summernote').summernote('focus');
+}
+
 var disable = function(){
     $('#summernote').summernote('disable');
 }

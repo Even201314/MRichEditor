@@ -23,6 +23,10 @@ public class RichEditorAction {
         load("javascript:redo()");
     }
 
+    public void focus() {
+        load("javascript:focus()");
+    }
+
     public void disable() {
         load("javascript:disable()");
     }
@@ -173,6 +177,8 @@ public class RichEditorAction {
         load("javascript:formatBlock('pre')");
     }
 
+    public void insertHtml(String html) {
+        load("javascript:pasteHTML('" + html + "')");
     }
 
     public String getHtml(RichEditorCallback callback) {

@@ -102,10 +102,10 @@ public class FontStyle {
     }
 
     public ActionType getFontBlock() {
+        ActionType type = ActionType.STYLE_NONE;
         if (TextUtils.isEmpty(fontBlock)) {
-            return null;
+            return type;
         }
-        ActionType type = null;
 
         if ("p".equals(fontBlock)) {
             type = ActionType.NORMAL;
@@ -162,12 +162,14 @@ public class FontStyle {
         if (TextUtils.isEmpty(listStyle)) {
             return null;
         }
-        ActionType type = null;
+        ActionType type;
 
         if ("ordered".equals(listStyle)) {
             type = ActionType.ORDERED;
         } else if ("unordered".equals(listStyle)) {
             type = ActionType.UNORDERED;
+        } else {
+            type = ActionType.LIST_STYLE_NONE;
         }
 
         return type;

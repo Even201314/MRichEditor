@@ -76,6 +76,9 @@ import java.util.ArrayList;
     @BindView(R.id.iv_action_heading1) ImageView ivH1;
     @BindView(R.id.iv_action_heading2) ImageView ivH2;
     @BindView(R.id.iv_action_heading3) ImageView ivH3;
+    @BindView(R.id.iv_action_heading4) ImageView ivH4;
+    @BindView(R.id.iv_action_heading5) ImageView ivH5;
+    @BindView(R.id.iv_action_heading6) ImageView ivH6;
 
     private static final int REQUEST_CODE_CHOOSE = 0;
 
@@ -211,6 +214,15 @@ import java.util.ArrayList;
                 break;
             case H3:
                 ivH3.performClick();
+                break;
+            case H4:
+                ivH4.performClick();
+                break;
+            case H5:
+                ivH5.performClick();
+                break;
+            case H6:
+                ivH6.performClick();
                 break;
             default:
                 break;
@@ -470,56 +482,53 @@ import java.util.ArrayList;
 
     class MRichEditorCallback extends RichEditorCallback {
 
-        @Override public void notifyFontFamilyChange(String fontFamily) {
-            updateFontFamilyStates(fontFamily);
-        }
-
-        @Override public void notifyFontColorChange(ActionType type, String color) {
-            updateFontColorStates(type, color);
-        }
-
-        @Override public void notifyJustifyChange(ActionType type) {
-            updateJustifyStates(type);
-        }
-
-        @Override public void notifyFontSizeChange(double fontSize) {
-            updateFontSizeStates(fontSize);
-        }
-
-        @Override public void notifyLineHeightChange(double lineHeight) {
-            updateLineHeightStates(lineHeight);
-        }
-
-        @Override public void notifyBoldChange(boolean isBold) {
-            updateButtonStates(ActionType.BOLD, isBold);
-        }
-
-        @Override public void notifyItalicChange(boolean isItalic) {
-            updateButtonStates(ActionType.ITALIC, isItalic);
-        }
-
-        @Override public void notifyUnderlineChange(boolean isUnderline) {
-            updateButtonStates(ActionType.UNDERLINE, isUnderline);
-        }
-
-        @Override public void notifySubscriptChange(boolean isSubscript) {
-            updateButtonStates(ActionType.SUBSCRIPT, isSubscript);
-        }
-
-        @Override public void notifySuperscriptChange(boolean isSuperscript) {
-            updateButtonStates(ActionType.SUPERSCRIPT, isSuperscript);
-        }
-
-        @Override public void notifyStrikethroughChange(boolean isStrikethrough) {
-            updateButtonStates(ActionType.STRIKETHROUGH, isStrikethrough);
-        }
-
-        @Override public void notifyFontBlockChange(ActionType type) {
-            updateFontBlockStates(type);
-        }
-
-        @Override public void notifyListStyleChange(ActionType type) {
-            updateListStyleStates(type);
+        @Override public void notifyFontStyleChange(ActionType type, final String value) {
+            switch (type) {
+                case FAMILY:
+                    updateFontFamilyStates(value);
+                    break;
+                case SIZE:
+                    updateFontSizeStates(Double.valueOf(value));
+                    break;
+                case FORE_COLOR:
+                case BACK_COLOR:
+                    updateFontColorStates(type, value);
+                    break;
+                case LINE_HEIGHT:
+                    updateLineHeightStates(Double.valueOf(value));
+                    break;
+                case JUSTIFY_LEFT:
+                case JUSTIFY_CENTER:
+                case JUSTIFY_RIGHT:
+                case JUSTIFY_FULL:
+                    updateJustifyStates(type);
+                    break;
+                case BOLD:
+                case ITALIC:
+                case UNDERLINE:
+                case SUBSCRIPT:
+                case SUPERSCRIPT:
+                case STRIKETHROUGH:
+                    updateButtonStates(type, Boolean.valueOf(value));
+                    break;
+                case NORMAL:
+                case H1:
+                case H2:
+                case H3:
+                case H4:
+                case H5:
+                case H6:
+                case STYLE_NONE:
+                    updateFontBlockStates(type);
+                    break;
+                case ORDERED:
+                case UNORDERED:
+                case LIST_STYLE_NONE:
+                    updateListStyleStates(type);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -580,7 +589,7 @@ import java.util.ArrayList;
         updateButtonStates(ivOrdered, type == ActionType.ORDERED);
     }
 
-    public void updateButtonStates(ActionType type, boolean isActive) {
+    private void updateButtonStates(ActionType type, boolean isActive) {
         if (mEditorMenuFragment != null) {
             mEditorMenuFragment.updateActionStates(type, isActive);
         }
