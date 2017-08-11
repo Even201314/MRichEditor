@@ -7,7 +7,7 @@ package com.even.mricheditor;
 
 public enum ActionType {
     //FONT
-    SIZE, LINE_HEIGHT, TEXT_COLOR, HIGHLIGHT,
+    SIZE, LINE_HEIGHT, TEXT_COLOR, HIGHLIGHT, BACK_COLOR, FORE_COLOR,
 
     // Format
     BOLD, ITALIC, UNDERLINE, SUBSCRIPT, SUPERSCRIPT, STRIKETHROUGH,

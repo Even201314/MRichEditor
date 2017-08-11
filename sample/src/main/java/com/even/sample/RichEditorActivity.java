@@ -474,6 +474,10 @@ import java.util.ArrayList;
             updateFontFamilyStates(fontFamily);
         }
 
+        @Override public void notifyFontColorChange(ActionType type, String color) {
+            updateFontColorStates(type, color);
+        }
+
         @Override public void notifyJustifyChange(ActionType type) {
             updateJustifyStates(type);
         }
@@ -516,6 +520,12 @@ import java.util.ArrayList;
 
         @Override public void notifyListStyleChange(ActionType type) {
             updateListStyleStates(type);
+        }
+    }
+
+    private void updateFontColorStates(ActionType type, String color) {
+        if (mEditorMenuFragment != null) {
+            mEditorMenuFragment.updateFontColorStates(type, color);
         }
     }
 

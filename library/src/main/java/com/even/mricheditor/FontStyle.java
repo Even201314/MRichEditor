@@ -31,6 +31,8 @@ public class FontStyle {
 
     @SerializedName("font-family") private String fontFamily;
     @SerializedName("font-size") private int fontSize;
+    @SerializedName("font-backColor") private String fontBackColor;
+    @SerializedName("font-foreColor") private String fontForeColor;
     @SerializedName("text-align") private String textAlign;
     @SerializedName("list-style-type") private String listStyleType;
     @SerializedName("line-height") private String lineHeight;
@@ -59,7 +61,7 @@ public class FontStyle {
             return null;
         }
 
-        ActionType type = null;
+        ActionType type;
         switch (textAlign) {
             case "left":
                 type = ActionType.JUSTIFY_LEFT;
@@ -122,6 +124,14 @@ public class FontStyle {
         }
 
         return type;
+    }
+
+    public String getFontBackColor() {
+        return fontBackColor;
+    }
+
+    public String getFontForeColor() {
+        return fontForeColor;
     }
 
     public boolean isBold() {

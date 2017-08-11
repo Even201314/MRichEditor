@@ -3439,6 +3439,8 @@
           'font-strikethrough': document.queryCommandState('strikethrough') ? 'strikethrough' : 'normal',
           'font-family': document.queryCommandValue('fontname') || styleInfo['font-family'],
           'font-block': document.queryCommandValue('formatblock'),
+          'font-backColor': document.queryCommandValue('backColor'),
+          'font-foreColor': document.queryCommandValue('foreColor')
         });
       } catch (e) {}
 

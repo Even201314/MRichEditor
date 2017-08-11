@@ -84,6 +84,11 @@ public class ColorPaletteView extends LinearLayout {
 
     public void setSelectedColor(String selectedColor) {
         this.selectedColor = selectedColor;
+        rvColorBlack.setSelected("#000000".equals(selectedColor));
+        rvColorBlue.setSelected("#2196F3".equals(selectedColor));
+        rvColorGreen.setSelected("#4CAF50".equals(selectedColor));
+        rvColorYellow.setSelected("#FFEB3B".equals(selectedColor));
+        rvColorRed.setSelected("#F44336".equals(selectedColor));
     }
 
     public void setOnColorChangeListener(OnColorChangeListener mOnColorChangeListener) {

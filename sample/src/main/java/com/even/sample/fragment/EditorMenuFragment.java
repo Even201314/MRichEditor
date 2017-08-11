@@ -420,6 +420,40 @@ public class EditorMenuFragment extends Fragment {
         });
     }
 
+    public void updateFontColorStates(final ActionType type, final String color) {
+        rootView.post(new Runnable() {
+            @Override public void run() {
+                String selectedColor = null;
+                switch (color) {
+                    case "rgb(0, 0, 0)":
+                        selectedColor = "#000000";
+                        break;
+                    case "rgb(33, 150, 243)":
+                        selectedColor = "#2196F3";
+                        break;
+                    case "rgb(76, 175, 80)":
+                        selectedColor = "#4CAF50";
+                        break;
+                    case "rgb(255, 235, 59)":
+                        selectedColor = "#FFEB3B";
+                        break;
+                    case "rgb(244, 67, 54)":
+                        selectedColor = "#F44336";
+                        break;
+                    case "rgb(255, 255, 255)":
+                        selectedColor = "#FFFFFF";
+                }
+                if (selectedColor != null) {
+                    if (type == ActionType.FORE_COLOR) {
+                        cpvFontTextColor.setSelectedColor(selectedColor);
+                    } else if (type == ActionType.BACK_COLOR) {
+                        cpvHighlightColor.setSelectedColor(selectedColor);
+                    }
+                }
+            }
+        });
+    }
+
     public void updateStyleStates(ActionType type) {
         changeStyleBackground(llNormal, type == ActionType.NORMAL);
         changeStyleBackground(llH1, type == ActionType.H1);

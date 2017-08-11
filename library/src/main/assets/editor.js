@@ -8,7 +8,23 @@ var initSummernote = function(){
             }
         }
     });
- }
+}
+
+var disable = function(){
+    $('#summernote').summernote('disable');
+}
+
+var enable = function(){
+    $('#summernote').summernote('enable');
+}
+
+var pasteHTML = function(html){
+    $('#summernote').summernote('code',html);
+}
+
+var getHtml = function(){
+    RichEditor.returnHtml($('#summernote').summernote('code'));
+}
 
 var undo = function() {
     $('#summernote').summernote('undo');

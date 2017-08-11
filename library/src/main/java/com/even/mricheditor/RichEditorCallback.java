@@ -12,6 +12,11 @@ import com.google.gson.Gson;
 public abstract class RichEditorCallback {
     private Gson gson = new Gson();
     private FontStyle mFontStyle = new FontStyle();
+    private String html;
+
+    @JavascriptInterface public void returnHtml(String html) {
+        this.html = html;
+    }
 
     @JavascriptInterface public void updateCurrentStyle(String currentStyle) {
         FontStyle fontStyle = gson.fromJson(currentStyle, FontStyle.class);
@@ -26,6 +31,20 @@ public abstract class RichEditorCallback {
             if (!TextUtils.isEmpty(fontStyle.getFontFamily())) {
                 String font = fontStyle.getFontFamily().split(",")[0].replace("\"", "");
                 notifyFontFamilyChange(font);
+            }
+        }
+
+        if (mFontStyle.getFontForeColor() == null || !mFontStyle.getFontForeColor()
+            .equals(fontStyle.getFontForeColor())) {
+            if (!TextUtils.isEmpty(fontStyle.getFontForeColor())) {
+                notifyFontColorChange(ActionType.FORE_COLOR, fontStyle.getFontForeColor());
+            }
+        }
+
+        if (mFontStyle.getFontBackColor() == null || !mFontStyle.getFontBackColor()
+            .equals(fontStyle.getFontBackColor())) {
+            if (!TextUtils.isEmpty(fontStyle.getFontBackColor())) {
+                notifyFontColorChange(ActionType.BACK_COLOR, fontStyle.getFontBackColor());
             }
         }
 
@@ -78,6 +97,8 @@ public abstract class RichEditorCallback {
 
     public abstract void notifyFontFamilyChange(String fontFamily);
 
+    public abstract void notifyFontColorChange(ActionType type, String color);
+
     public abstract void notifyJustifyChange(ActionType type);
 
     public abstract void notifyFontSizeChange(double fontSize);
@@ -99,4 +120,8 @@ public abstract class RichEditorCallback {
     public abstract void notifyFontBlockChange(ActionType type);
 
     public abstract void notifyListStyleChange(ActionType type);
+
+    public String getHtml() {
+        return html;
+    }
 }

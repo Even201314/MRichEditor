@@ -173,6 +173,13 @@ public class RichEditorAction {
         load("javascript:formatBlock('pre')");
     }
 
+    }
+
+    public String getHtml(RichEditorCallback callback) {
+        load("javascript:getHtml()");
+        return callback.getHtml();
+    }
+
     private void load(String trigger) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             this.mWebView.evaluateJavascript(trigger, null);
