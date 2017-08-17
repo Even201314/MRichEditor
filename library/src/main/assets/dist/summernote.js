@@ -6449,7 +6449,7 @@
 
     this.updateCurrentStyle = function () {
       var styleInfo = context.invoke('editor.currentStyle');
-      RichEditor.updateCurrentStyle(JSON.stringify(styleInfo));
+      MRichEditor.updateCurrentStyle(JSON.stringify(styleInfo));
       this.updateBtnStates({
         '.note-btn-bold': function () {
           return styleInfo['font-bold'] === 'bold';

@@ -66,13 +66,6 @@
           style="@style/ActionImageView"
           />
 
-      <ImageView
-          android:id="@+id/iv_keyboard"
-          android:padding="10dp"
-          android:src="@drawable/ic_keyboard"
-          style="@style/ActionImageView"
-          />
-
       <View
           android:layout_width="0.5dp"
           android:layout_height="24dp"

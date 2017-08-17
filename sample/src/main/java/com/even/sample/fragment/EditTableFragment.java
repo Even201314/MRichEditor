@@ -1,4 +1,4 @@
-package com.even.sample;
+package com.even.sample.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,22 +10,23 @@ import android.widget.EditText;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.even.sample.R;
 
 /**
- * Edit Hyperlink Activity
+ * Edit Table Fragment
  * Created by even.wu on 10/8/17.
  */
 
-public class EditHyperlinkFragment extends Fragment {
-    @BindView(R.id.et_address) EditText etAddress;
-    @BindView(R.id.et_display_text) EditText etDisplayText;
+public class EditTableFragment extends Fragment {
+    @BindView(R.id.et_rows) EditText etRows;
+    @BindView(R.id.et_cols) EditText etCols;
 
-    private OnHyperlinkListener mOnHyperlinkListener;
+    private OnTableListener mOnTableListener;
 
     @Nullable @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
         @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_edit_hyperlink, null);
+        View rootView = inflater.inflate(R.layout.fragment_edit_table, null);
         ButterKnife.bind(this, rootView);
         return rootView;
     }
@@ -35,18 +36,18 @@ public class EditHyperlinkFragment extends Fragment {
     }
 
     @OnClick(R.id.btn_ok) void onClickOK() {
-        if (mOnHyperlinkListener != null) {
-            mOnHyperlinkListener.onHyperlinkOK(etAddress.getText().toString(),
-                etDisplayText.getText().toString());
+        if (mOnTableListener != null) {
+            mOnTableListener.onTableOK(Integer.valueOf(etRows.getText().toString()),
+                Integer.valueOf(etCols.getText().toString()));
             onClickBack();
         }
     }
 
-    public void setOnHyperlinkListener(OnHyperlinkListener mOnHyperlinkListener) {
-        this.mOnHyperlinkListener = mOnHyperlinkListener;
+    public void setOnTableListener(OnTableListener mOnTableListener) {
+        this.mOnTableListener = mOnTableListener;
     }
 
-    interface OnHyperlinkListener {
-        void onHyperlinkOK(String address, String text);
+    public interface OnTableListener {
+        void onTableOK(int rows, int cols);
     }
 }

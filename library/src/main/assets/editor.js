@@ -26,8 +26,8 @@ var pasteHTML = function(html){
     $('#summernote').summernote('code',html);
 }
 
-var getHtml = function(){
-    RichEditor.returnHtml($('#summernote').summernote('code'));
+var refreshHTML = function(){
+    MRichEditor.returnHtml($('#summernote').summernote('code'));
 }
 
 var undo = function() {

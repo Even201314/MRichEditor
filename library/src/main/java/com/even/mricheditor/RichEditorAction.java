@@ -181,9 +181,8 @@ public class RichEditorAction {
         load("javascript:pasteHTML('" + html + "')");
     }
 
-    public String getHtml(RichEditorCallback callback) {
-        load("javascript:getHtml()");
-        return callback.getHtml();
+    public void refreshHtml(RichEditorCallback callback) {
+        load("javascript:refreshHTML()");
     }
 
     private void load(String trigger) {

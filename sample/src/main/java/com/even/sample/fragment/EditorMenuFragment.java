@@ -15,6 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.even.mricheditor.ActionType;
 import com.even.sample.R;
+import com.even.sample.interfaces.OnActionPerformListener;
 import com.even.sample.widget.ColorPaletteView;
 
 /**
@@ -69,7 +70,7 @@ public class EditorMenuFragment extends Fragment {
     @BindView(R.id.cpv_highlight_color) ColorPaletteView cpvHighlightColor;
     @BindView(R.id.tv_font_color_auto) TextView tvHighlightNone;
 
-    private OnActionClickListener mActionClickListener;
+    private OnActionPerformListener mActionClickListener;
 
     @Nullable @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -90,7 +91,7 @@ public class EditorMenuFragment extends Fragment {
         cpvFontTextColor.setOnColorChangeListener(new ColorPaletteView.OnColorChangeListener() {
             @Override public void onColorChange(String color) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onFontColorChange(ActionType.TEXT_COLOR, color);
+                    mActionClickListener.onActionPerform(ActionType.TEXT_COLOR, color);
                 }
             }
         });
@@ -98,7 +99,7 @@ public class EditorMenuFragment extends Fragment {
         cpvHighlightColor.setOnColorChangeListener(new ColorPaletteView.OnColorChangeListener() {
             @Override public void onColorChange(String color) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onFontColorChange(ActionType.HIGHLIGHT, color);
+                    mActionClickListener.onActionPerform(ActionType.HIGHLIGHT, color);
                 }
             }
         });
@@ -106,7 +107,7 @@ public class EditorMenuFragment extends Fragment {
         tvHighlightNone.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onFontColorChange(ActionType.HIGHLIGHT, "#FFFFFF");
+                    mActionClickListener.onActionPerform(ActionType.HIGHLIGHT, "#FFFFFF");
                 }
             }
         });
@@ -126,7 +127,7 @@ public class EditorMenuFragment extends Fragment {
         ivBold.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.BOLD);
+                    mActionClickListener.onActionPerform(ActionType.BOLD);
                 }
             }
         });
@@ -134,7 +135,7 @@ public class EditorMenuFragment extends Fragment {
         ivItalic.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.ITALIC);
+                    mActionClickListener.onActionPerform(ActionType.ITALIC);
                 }
             }
         });
@@ -142,7 +143,7 @@ public class EditorMenuFragment extends Fragment {
         ivUnderline.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.UNDERLINE);
+                    mActionClickListener.onActionPerform(ActionType.UNDERLINE);
                 }
             }
         });
@@ -150,7 +151,7 @@ public class EditorMenuFragment extends Fragment {
         ivStrikethrough.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.STRIKETHROUGH);
+                    mActionClickListener.onActionPerform(ActionType.STRIKETHROUGH);
                 }
             }
         });
@@ -158,7 +159,7 @@ public class EditorMenuFragment extends Fragment {
         ivJustifyLeft.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.JUSTIFY_LEFT);
+                    mActionClickListener.onActionPerform(ActionType.JUSTIFY_LEFT);
                 }
             }
         });
@@ -166,7 +167,7 @@ public class EditorMenuFragment extends Fragment {
         ivJustifyCenter.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.JUSTIFY_CENTER);
+                    mActionClickListener.onActionPerform(ActionType.JUSTIFY_CENTER);
                 }
             }
         });
@@ -174,7 +175,7 @@ public class EditorMenuFragment extends Fragment {
         ivJustifyRight.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.JUSTIFY_RIGHT);
+                    mActionClickListener.onActionPerform(ActionType.JUSTIFY_RIGHT);
                 }
             }
         });
@@ -182,7 +183,7 @@ public class EditorMenuFragment extends Fragment {
         ivJustifyFull.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.JUSTIFY_FULL);
+                    mActionClickListener.onActionPerform(ActionType.JUSTIFY_FULL);
                 }
             }
         });
@@ -190,7 +191,7 @@ public class EditorMenuFragment extends Fragment {
         ivSubScript.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.SUBSCRIPT);
+                    mActionClickListener.onActionPerform(ActionType.SUBSCRIPT);
                 }
             }
         });
@@ -198,7 +199,7 @@ public class EditorMenuFragment extends Fragment {
         ivSuperScript.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.SUPERSCRIPT);
+                    mActionClickListener.onActionPerform(ActionType.SUPERSCRIPT);
                 }
             }
         });
@@ -206,7 +207,7 @@ public class EditorMenuFragment extends Fragment {
         ivCodeView.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.CODEVIEW);
+                    mActionClickListener.onActionPerform(ActionType.CODEVIEW);
                 }
             }
         });
@@ -214,7 +215,7 @@ public class EditorMenuFragment extends Fragment {
         ivUnOrdered.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.UNORDERED);
+                    mActionClickListener.onActionPerform(ActionType.UNORDERED);
                 }
             }
         });
@@ -222,7 +223,7 @@ public class EditorMenuFragment extends Fragment {
         ivOrdered.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.ORDERED);
+                    mActionClickListener.onActionPerform(ActionType.ORDERED);
                 }
             }
         });
@@ -230,7 +231,7 @@ public class EditorMenuFragment extends Fragment {
         ivIndent.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.INDENT);
+                    mActionClickListener.onActionPerform(ActionType.INDENT);
                 }
             }
         });
@@ -238,7 +239,7 @@ public class EditorMenuFragment extends Fragment {
         ivOutdent.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.OUTDENT);
+                    mActionClickListener.onActionPerform(ActionType.OUTDENT);
                 }
             }
         });
@@ -246,7 +247,7 @@ public class EditorMenuFragment extends Fragment {
         ivImage.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.IMAGE);
+                    mActionClickListener.onActionPerform(ActionType.IMAGE);
                 }
             }
         });
@@ -254,7 +255,7 @@ public class EditorMenuFragment extends Fragment {
         ivLink.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.LINK);
+                    mActionClickListener.onActionPerform(ActionType.LINK);
                 }
             }
         });
@@ -262,7 +263,7 @@ public class EditorMenuFragment extends Fragment {
         ivTable.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.TABLE);
+                    mActionClickListener.onActionPerform(ActionType.TABLE);
                 }
             }
         });
@@ -270,7 +271,7 @@ public class EditorMenuFragment extends Fragment {
         ivLine.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.LINE);
+                    mActionClickListener.onActionPerform(ActionType.LINE);
                 }
             }
         });
@@ -278,7 +279,7 @@ public class EditorMenuFragment extends Fragment {
         ivBlockQuote.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.BLOCKQUOTE);
+                    mActionClickListener.onActionPerform(ActionType.BLOCKQUOTE);
                 }
             }
         });
@@ -286,7 +287,7 @@ public class EditorMenuFragment extends Fragment {
         ivCodeBlock.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.CODE_BLOCK);
+                    mActionClickListener.onActionPerform(ActionType.CODE_BLOCK);
                 }
             }
         });
@@ -294,7 +295,7 @@ public class EditorMenuFragment extends Fragment {
         llNormal.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.NORMAL);
+                    mActionClickListener.onActionPerform(ActionType.NORMAL);
                 }
             }
         });
@@ -302,7 +303,7 @@ public class EditorMenuFragment extends Fragment {
         llH1.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.H1);
+                    mActionClickListener.onActionPerform(ActionType.H1);
                 }
             }
         });
@@ -310,7 +311,7 @@ public class EditorMenuFragment extends Fragment {
         llH2.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.H2);
+                    mActionClickListener.onActionPerform(ActionType.H2);
                 }
             }
         });
@@ -318,7 +319,7 @@ public class EditorMenuFragment extends Fragment {
         llH3.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.H3);
+                    mActionClickListener.onActionPerform(ActionType.H3);
                 }
             }
         });
@@ -326,7 +327,7 @@ public class EditorMenuFragment extends Fragment {
         llH4.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.H4);
+                    mActionClickListener.onActionPerform(ActionType.H4);
                 }
             }
         });
@@ -334,7 +335,7 @@ public class EditorMenuFragment extends Fragment {
         llH5.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.H5);
+                    mActionClickListener.onActionPerform(ActionType.H5);
                 }
             }
         });
@@ -342,7 +343,7 @@ public class EditorMenuFragment extends Fragment {
         llH6.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionClick(ActionType.H6);
+                    mActionClickListener.onActionPerform(ActionType.H6);
                 }
             }
         });
@@ -361,15 +362,15 @@ public class EditorMenuFragment extends Fragment {
                     switch (type) {
                         case FontSettingFragment.TYPE_SIZE:
                             tvFontSize.setText(result);
-                            mActionClickListener.onFontSizeChange(Double.valueOf(result));
+                            mActionClickListener.onActionPerform(ActionType.SIZE, result);
                             break;
                         case FontSettingFragment.TYPE_LINE_HGEIGHT:
                             tvFontSpacing.setText(result);
-                            mActionClickListener.onFontLineHeightChange(Double.valueOf(result));
+                            mActionClickListener.onActionPerform(ActionType.LINE_HEIGHT, result);
                             break;
                         case FontSettingFragment.TYPE_FONT_FAMILY:
                             tvFontName.setText(result);
-                            mActionClickListener.onFontFamilyChange(result);
+                            mActionClickListener.onActionPerform(ActionType.FAMILY, result);
                             break;
                         default:
                             break;
@@ -524,19 +525,7 @@ public class EditorMenuFragment extends Fragment {
         });
     }
 
-    public interface OnActionClickListener {
-        void onActionClick(ActionType type);
-
-        void onFontSizeChange(double size);
-
-        void onFontLineHeightChange(double size);
-
-        void onFontColorChange(ActionType type, String color);
-
-        void onFontFamilyChange(String font);
-    }
-
-    public void setActionClickListener(OnActionClickListener mActionClickListener) {
+    public void setActionClickListener(OnActionPerformListener mActionClickListener) {
         this.mActionClickListener = mActionClickListener;
     }
 }
