@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +13,14 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.even.mricheditor.ActionType;
 import com.even.mricheditor.RichEditorAction;
 import com.even.mricheditor.RichEditorCallback;
+import com.even.mricheditor.ui.ActionImageView;
 import com.even.sample.fragment.EditHyperlinkFragment;
 import com.even.sample.fragment.EditTableFragment;
 import com.even.sample.fragment.EditorMenuFragment;
@@ -32,11 +33,14 @@ import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.view.CropImageView;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @SuppressLint("SetJavaScriptEnabled") public class RichEditorActivity extends AppCompatActivity
     implements KeyboardHeightObserver {
     @BindView(R.id.wv_container) WebView mWebView;
     @BindView(R.id.fl_action) FrameLayout flAction;
+    @BindView(R.id.ll_action_bar_container) LinearLayout llActionBarContainer;
 
     /** The keyboard height provider */
     private KeyboardHeightProvider keyboardHeightProvider;
@@ -47,34 +51,31 @@ import java.util.ArrayList;
 
     private EditorMenuFragment mEditorMenuFragment;
 
-    @BindView(R.id.iv_action_bold) ImageView ivBold;
-    @BindView(R.id.iv_action_italic) ImageView ivItalic;
-    @BindView(R.id.iv_action_underline) ImageView ivUnderline;
-    @BindView(R.id.iv_action_strikethrough) ImageView ivStrikethrough;
+    private List<ActionType> mActionTypeList =
+        Arrays.asList(ActionType.BOLD, ActionType.ITALIC, ActionType.UNDERLINE,
+            ActionType.STRIKETHROUGH, ActionType.SUBSCRIPT, ActionType.SUPERSCRIPT, ActionType.H1,
+            ActionType.H2, ActionType.H3, ActionType.H4, ActionType.H5, ActionType.H6,
+            ActionType.INDENT, ActionType.OUTDENT, ActionType.JUSTIFY_LEFT,
+            ActionType.JUSTIFY_CENTER, ActionType.JUSTIFY_RIGHT, ActionType.JUSTIFY_FULL,
+            ActionType.ORDERED, ActionType.UNORDERED, ActionType.LINE, ActionType.BLOCK_CODE,
+            ActionType.BLOCK_QUOTE, ActionType.CODE_VIEW);
 
-    @BindView(R.id.iv_action_justify_left) ImageView ivJustifyLeft;
-    @BindView(R.id.iv_action_justify_center) ImageView ivJustifyCenter;
-    @BindView(R.id.iv_action_justify_right) ImageView ivJustifyRight;
-    @BindView(R.id.iv_action_justify_full) ImageView ivJustifyFull;
-
-    @BindView(R.id.iv_action_insert_numbers) ImageView ivOrdered;
-    @BindView(R.id.iv_action_insert_bullets) ImageView ivUnOrdered;
-
-    @BindView(R.id.iv_action_indent) ImageView ivIndent;
-    @BindView(R.id.iv_action_outdent) ImageView ivOutdent;
-
-    @BindView(R.id.iv_action_subscript) ImageView ivSubScript;
-    @BindView(R.id.iv_action_superscript) ImageView ivSuperScript;
+    private List<Integer> mActionTypeIconList =
+        Arrays.asList(R.drawable.ic_format_bold, R.drawable.ic_format_italic,
+            R.drawable.ic_format_underlined, R.drawable.ic_format_strikethrough,
+            R.drawable.ic_format_subscript, R.drawable.ic_format_superscript,
+            R.drawable.ic_format_h1, R.drawable.ic_format_h2, R.drawable.ic_format_h3,
+            R.drawable.ic_format_h4, R.drawable.ic_format_h5, R.drawable.ic_format_h6,
+            R.drawable.ic_format_indent_decrease, R.drawable.ic_format_indent_increase,
+            R.drawable.ic_format_align_left, R.drawable.ic_format_align_center,
+            R.drawable.ic_format_align_right, R.drawable.ic_format_align_justify,
+            R.drawable.ic_format_list_numbered, R.drawable.ic_format_list_bulleted,
+            R.drawable.ic_line, R.drawable.ic_code_block, R.drawable.ic_format_quote,
+            R.drawable.ic_code_review);
 
     @BindView(R.id.iv_action_insert_image) ImageView ivImage;
     @BindView(R.id.iv_action_insert_link) ImageView ivLink;
     @BindView(R.id.iv_action_table) ImageView ivTable;
-    @BindView(R.id.iv_action_line) ImageView ivLine;
-
-    @BindView(R.id.iv_action_blockquote) ImageView ivBlockQuote;
-    @BindView(R.id.iv_action_code_block) ImageView ivCodeBlock;
-
-    @BindView(R.id.iv_action_code_view) ImageView ivCodeView;
 
     private static final int REQUEST_CODE_CHOOSE = 0;
 
@@ -85,6 +86,23 @@ import java.util.ArrayList;
 
         initImageLoader();
         initView();
+
+        for (int i = 0, size = mActionTypeList.size(); i < size; i++) {
+            final ActionImageView actionImageView = new ActionImageView(this);
+            actionImageView.setActionType(mActionTypeList.get(i));
+            actionImageView.setTag(mActionTypeList.get(i));
+            actionImageView.setActivatedColor(R.color.colorAccent);
+            actionImageView.setDeactivatedColor(R.color.tintColor);
+            actionImageView.setRichEditorAction(mRichEditorAction);
+            actionImageView.setBackgroundResource(R.drawable.btn_colored_material);
+            actionImageView.setImageResource(mActionTypeIconList.get(i));
+            actionImageView.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    actionImageView.command();
+                }
+            });
+            llActionBarContainer.addView(actionImageView);
+        }
 
         mEditorMenuFragment = new EditorMenuFragment();
         mEditorMenuFragment.setActionClickListener(new MOnActionPerformListener(mRichEditorAction));
@@ -158,96 +176,12 @@ import java.util.ArrayList;
         mRichEditorAction.redo();
     }
 
-    @OnClick(R.id.iv_action_bold) void onClickBold() {
-        mRichEditorAction.bold();
-    }
-
-    @OnClick(R.id.iv_action_italic) void onClickItalic() {
-        mRichEditorAction.italic();
-    }
-
-    @OnClick(R.id.iv_action_subscript) void onClickSubscript() {
-        mRichEditorAction.subscript();
-    }
-
-    @OnClick(R.id.iv_action_superscript) void onClickSuperscript() {
-        mRichEditorAction.superscript();
-    }
-
-    @OnClick(R.id.iv_action_strikethrough) void onClickStrikethrough() {
-        mRichEditorAction.strikethrough();
-    }
-
-    @OnClick(R.id.iv_action_underline) void onClickUnderline() {
-        mRichEditorAction.underline();
-    }
-
-    @OnClick(R.id.iv_action_heading1) void onClickH1() {
-        mRichEditorAction.formatH1();
-    }
-
-    @OnClick(R.id.iv_action_heading2) void onClickH2() {
-        mRichEditorAction.formatH2();
-    }
-
-    @OnClick(R.id.iv_action_heading3) void onClickH3() {
-        mRichEditorAction.formatH3();
-    }
-
-    @OnClick(R.id.iv_action_heading4) void onClickH4() {
-        mRichEditorAction.formatH4();
-    }
-
-    @OnClick(R.id.iv_action_heading5) void onClickH5() {
-        mRichEditorAction.formatH5();
-    }
-
-    @OnClick(R.id.iv_action_heading6) void onClickH6() {
-        mRichEditorAction.formatH6();
-    }
-
     @OnClick(R.id.iv_action_txt_color) void onClickTextColor() {
         mRichEditorAction.foreColor("blue");
     }
 
     @OnClick(R.id.iv_action_txt_bg_color) void onClickHighlight() {
         mRichEditorAction.backColor("red");
-    }
-
-    @OnClick(R.id.iv_action_indent) void onClickIndent() {
-        mRichEditorAction.indent();
-    }
-
-    @OnClick(R.id.iv_action_outdent) void onClickOutdent() {
-        mRichEditorAction.outdent();
-    }
-
-    @OnClick(R.id.iv_action_justify_left) void onClickJustifyLeft() {
-        mRichEditorAction.justifyLeft();
-    }
-
-    @OnClick(R.id.iv_action_justify_center) void onClickJustifyCenter() {
-        mRichEditorAction.justifyCenter();
-    }
-
-    @OnClick(R.id.iv_action_justify_right) void onClickJustifyRight() {
-        mRichEditorAction.justifyRight();
-    }
-
-    @OnClick(R.id.iv_action_justify_full) void onClickJustifyFull() {
-        mRichEditorAction.justifyFull();
-    }
-
-    @OnClick(R.id.iv_action_insert_bullets) void onClickUnOrdered() {
-        mRichEditorAction.insertUnorderedList();
-    }
-
-    @OnClick(R.id.iv_action_insert_numbers) void onClickOrdered() {
-        mRichEditorAction.insertOrderedList();
-    }
-
-    @OnClick(R.id.iv_action_code_view) void onClickCodeView() {
-        mRichEditorAction.codeReview();
     }
 
     @OnClick(R.id.iv_action_line_height) void onClickLineHeight() {
@@ -300,18 +234,6 @@ import java.util.ArrayList;
             .commit();
     }
 
-    @OnClick(R.id.iv_action_line) void onClickInsertLine() {
-        mRichEditorAction.insertHorizontalRule();
-    }
-
-    @OnClick(R.id.iv_action_blockquote) void onClickBlockQuote() {
-        mRichEditorAction.formatBlockquote();
-    }
-
-    @OnClick(R.id.iv_action_code_block) void onClickCodeBlock() {
-        mRichEditorAction.formatBlockCode();
-    }
-
     @Override public void onResume() {
         super.onResume();
         keyboardHeightProvider.setKeyboardHeightObserver(this);
@@ -345,6 +267,12 @@ import java.util.ArrayList;
     class MRichEditorCallback extends RichEditorCallback {
 
         @Override public void notifyFontStyleChange(ActionType type, final String value) {
+            ActionImageView actionImageView =
+                (ActionImageView) llActionBarContainer.findViewWithTag(type);
+            if (actionImageView != null) {
+                actionImageView.notifyFontStyleChange(type, value);
+            }
+
             switch (type) {
                 case FAMILY:
                     mEditorMenuFragment.updateFontFamilyStates(value);
@@ -381,12 +309,10 @@ import java.util.ArrayList;
                 case H4:
                 case H5:
                 case H6:
-                case STYLE_NONE:
                     mEditorMenuFragment.updateStyleStates(type);
                     break;
                 case ORDERED:
                 case UNORDERED:
-                case LIST_STYLE_NONE:
                     updateListStyleStates(type);
                     break;
                 default:
@@ -404,58 +330,15 @@ import java.util.ArrayList;
             type == ActionType.JUSTIFY_RIGHT);
         mEditorMenuFragment.updateActionStates(ActionType.JUSTIFY_FULL,
             type == ActionType.JUSTIFY_FULL);
-
-        updateActionItemUI(ivJustifyLeft, type == ActionType.JUSTIFY_LEFT);
-        updateActionItemUI(ivJustifyCenter, type == ActionType.JUSTIFY_CENTER);
-        updateActionItemUI(ivJustifyRight, type == ActionType.JUSTIFY_RIGHT);
-        updateActionItemUI(ivJustifyFull, type == ActionType.JUSTIFY_FULL);
     }
 
     private void updateListStyleStates(ActionType type) {
         mEditorMenuFragment.updateActionStates(ActionType.UNORDERED, type == ActionType.UNORDERED);
         mEditorMenuFragment.updateActionStates(ActionType.ORDERED, type == ActionType.ORDERED);
-
-        updateActionItemUI(ivUnOrdered, type == ActionType.UNORDERED);
-        updateActionItemUI(ivOrdered, type == ActionType.ORDERED);
     }
 
     private void updateButtonStates(ActionType type, boolean isActive) {
         mEditorMenuFragment.updateActionStates(type, isActive);
-
-        switch (type) {
-            case BOLD:
-                updateActionItemUI(ivBold, isActive);
-                break;
-            case ITALIC:
-                updateActionItemUI(ivItalic, isActive);
-                break;
-            case UNDERLINE:
-                updateActionItemUI(ivUnderline, isActive);
-                break;
-            case SUBSCRIPT:
-                updateActionItemUI(ivSubScript, isActive);
-                break;
-            case SUPERSCRIPT:
-                updateActionItemUI(ivSuperScript, isActive);
-                break;
-            case STRIKETHROUGH:
-                updateActionItemUI(ivStrikethrough, isActive);
-                break;
-            case CODEVIEW:
-                updateActionItemUI(ivCodeView, isActive);
-                break;
-            default:
-                break;
-        }
-    }
-
-    private void updateActionItemUI(final ImageView iv, final boolean isActive) {
-        mWebView.post(new Runnable() {
-            @Override public void run() {
-                iv.setColorFilter(ContextCompat.getColor(RichEditorActivity.this,
-                    isActive ? R.color.colorAccent : R.color.tintColor));
-            }
-        });
     }
 
     public class MOnActionPerformListener implements OnActionPerformListener {
@@ -482,59 +365,44 @@ import java.util.ArrayList;
                 case LINE_HEIGHT:
                     mRichEditorAction.lineHeight(Double.valueOf(value));
                     break;
-                case TEXT_COLOR:
+                case FORE_COLOR:
                     mRichEditorAction.foreColor(value);
                     break;
-                case HIGHLIGHT:
+                case BACK_COLOR:
                     mRichEditorAction.backColor(value);
                     break;
                 case FAMILY:
                     mRichEditorAction.fontName(value);
                     break;
                 case BOLD:
-                    mRichEditorAction.bold();
-                    break;
                 case ITALIC:
-                    mRichEditorAction.italic();
-                    break;
                 case UNDERLINE:
-                    mRichEditorAction.underline();
-                    break;
                 case SUBSCRIPT:
-                    mRichEditorAction.subscript();
-                    break;
                 case SUPERSCRIPT:
-                    mRichEditorAction.superscript();
-                    break;
                 case STRIKETHROUGH:
-                    mRichEditorAction.strikethrough();
-                    break;
                 case JUSTIFY_LEFT:
-                    mRichEditorAction.justifyLeft();
-                    break;
                 case JUSTIFY_CENTER:
-                    mRichEditorAction.justifyCenter();
-                    break;
                 case JUSTIFY_RIGHT:
-                    mRichEditorAction.justifyRight();
-                    break;
                 case JUSTIFY_FULL:
-                    mRichEditorAction.justifyFull();
-                    break;
-                case CODEVIEW:
-                    mRichEditorAction.codeReview();
-                    break;
+                case CODE_VIEW:
                 case ORDERED:
-                    mRichEditorAction.insertOrderedList();
-                    break;
                 case UNORDERED:
-                    mRichEditorAction.insertUnorderedList();
-                    break;
                 case INDENT:
-                    mRichEditorAction.indent();
-                    break;
                 case OUTDENT:
-                    mRichEditorAction.outdent();
+                case BLOCK_QUOTE:
+                case BLOCK_CODE:
+                case NORMAL:
+                case H1:
+                case H2:
+                case H3:
+                case H4:
+                case H5:
+                case H6:
+                    ActionImageView actionImageView =
+                        (ActionImageView) llActionBarContainer.findViewWithTag(type);
+                    if (actionImageView != null) {
+                        actionImageView.performClick();
+                    }
                     break;
                 case IMAGE:
                     ivImage.performClick();
@@ -546,34 +414,6 @@ import java.util.ArrayList;
                     ivTable.performClick();
                     break;
                 case LINE:
-                    ivLine.performClick();
-                    break;
-                case BLOCKQUOTE:
-                    mRichEditorAction.formatBlockquote();
-                    break;
-                case CODE_BLOCK:
-                    mRichEditorAction.formatBlockCode();
-                    break;
-                case NORMAL:
-                    mRichEditorAction.formatPara();
-                    break;
-                case H1:
-                    mRichEditorAction.formatH1();
-                    break;
-                case H2:
-                    mRichEditorAction.formatH2();
-                    break;
-                case H3:
-                    mRichEditorAction.formatH3();
-                    break;
-                case H4:
-                    mRichEditorAction.formatH4();
-                    break;
-                case H5:
-                    mRichEditorAction.formatH5();
-                    break;
-                case H6:
-                    mRichEditorAction.formatH6();
                     break;
                 default:
                     break;

@@ -157,8 +157,8 @@ public class RichEditorAction {
         load("javascript:unlink()");
     }
 
-    public void codeReview() {
-        load("javascript:codeReview()");
+    public void codeView() {
+        load("javascript:codeView()");
     }
 
     public void insertTable(int colCount, int rowCount) {

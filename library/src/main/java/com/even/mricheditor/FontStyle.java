@@ -102,7 +102,7 @@ public class FontStyle {
     }
 
     public ActionType getFontBlock() {
-        ActionType type = ActionType.STYLE_NONE;
+        ActionType type = ActionType.NONE;
         if (TextUtils.isEmpty(fontBlock)) {
             return type;
         }
@@ -169,7 +169,7 @@ public class FontStyle {
         } else if ("unordered".equals(listStyle)) {
             type = ActionType.UNORDERED;
         } else {
-            type = ActionType.LIST_STYLE_NONE;
+            type = ActionType.NONE;
         }
 
         return type;

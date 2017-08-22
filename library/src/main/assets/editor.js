@@ -178,7 +178,7 @@ var insertText = function(text) {
     $('#summernote').summernote('editor.insertText', text);
 };
 
-var codeReview = function(){
+var codeView = function(){
     $('#summernote').summernote('codeview.toggle');
 }
 

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <declare-styleable name="ActionImageView">
+    <attr name="actionType">
+      <enum name="none" value="0" />
+      <enum name="family" value="1" />
+      <enum name="size" value="2" />
+      <enum name="lineHeight" value="3" />
+      <enum name="foreColor" value="4" />
+      <enum name="backColor" value="5" />
+
+      <enum name="bold" value="6" />
+      <enum name="italic" value="7" />
+      <enum name="underline" value="8" />
+      <enum name="subscript" value="9" />
+      <enum name="superscript" value="10" />
+      <enum name="strikethrough" value="11" />
+
+      <enum name="normal" value="12" />
+      <enum name="h1" value="13" />
+      <enum name="h2" value="14" />
+      <enum name="h3" value="15" />
+      <enum name="h4" value="16" />
+      <enum name="h5" value="17" />
+      <enum name="h6" value="18" />
+
+      <enum name="justifyLeft" value="19" />
+      <enum name="justifyCenter" value="20" />
+      <enum name="justifyRight" value="21" />
+      <enum name="justifyFull" value="22" />
+
+      <enum name="ordered" value="23" />
+      <enum name="unordered" value="24" />
+
+      <enum name="indent" value="25" />
+      <enum name="outdent" value="26" />
+
+      <enum name="image" value="27" />
+      <enum name="link" value="28" />
+      <enum name="table" value="29" />
+      <enum name="line" value="30" />
+
+      <enum name="blockQuote" value="31" />
+      <enum name="blockCode" value="32" />
+
+      <enum name="codeView" value="33" />
+
+    </attr>
+  </declare-styleable>
+</resources>

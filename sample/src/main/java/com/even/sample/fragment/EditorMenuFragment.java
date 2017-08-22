@@ -91,7 +91,7 @@ public class EditorMenuFragment extends Fragment {
         cpvFontTextColor.setOnColorChangeListener(new ColorPaletteView.OnColorChangeListener() {
             @Override public void onColorChange(String color) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.TEXT_COLOR, color);
+                    mActionClickListener.onActionPerform(ActionType.FORE_COLOR, color);
                 }
             }
         });
@@ -99,7 +99,7 @@ public class EditorMenuFragment extends Fragment {
         cpvHighlightColor.setOnColorChangeListener(new ColorPaletteView.OnColorChangeListener() {
             @Override public void onColorChange(String color) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.HIGHLIGHT, color);
+                    mActionClickListener.onActionPerform(ActionType.BACK_COLOR, color);
                 }
             }
         });
@@ -107,7 +107,7 @@ public class EditorMenuFragment extends Fragment {
         tvHighlightNone.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.HIGHLIGHT, "#FFFFFF");
+                    mActionClickListener.onActionPerform(ActionType.BACK_COLOR, "#FFFFFF");
                 }
             }
         });
@@ -207,7 +207,7 @@ public class EditorMenuFragment extends Fragment {
         ivCodeView.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.CODEVIEW);
+                    mActionClickListener.onActionPerform(ActionType.CODE_VIEW);
                 }
             }
         });
@@ -279,7 +279,7 @@ public class EditorMenuFragment extends Fragment {
         ivBlockQuote.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.BLOCKQUOTE);
+                    mActionClickListener.onActionPerform(ActionType.BLOCK_QUOTE);
                 }
             }
         });
@@ -287,7 +287,7 @@ public class EditorMenuFragment extends Fragment {
         ivCodeBlock.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.CODE_BLOCK);
+                    mActionClickListener.onActionPerform(ActionType.BLOCK_CODE);
                 }
             }
         });
@@ -424,7 +424,7 @@ public class EditorMenuFragment extends Fragment {
             case UNORDERED:
                 updateButtonStates(ivUnOrdered, isActive);
                 break;
-            case CODEVIEW:
+            case CODE_VIEW:
                 updateButtonStates(ivCodeView, isActive);
                 break;
             default:
