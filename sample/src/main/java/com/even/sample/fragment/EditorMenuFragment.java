@@ -9,14 +9,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.even.mricheditor.ActionType;
 import com.even.sample.R;
 import com.even.sample.interfaces.OnActionPerformListener;
 import com.even.sample.widget.ColorPaletteView;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Editor Menu Fragment
@@ -28,49 +32,44 @@ public class EditorMenuFragment extends Fragment {
     @BindView(R.id.tv_font_size) TextView tvFontSize;
     @BindView(R.id.tv_font_name) TextView tvFontName;
     @BindView(R.id.tv_font_spacing) TextView tvFontSpacing;
-
-    @BindView(R.id.iv_action_bold) ImageView ivBold;
-    @BindView(R.id.iv_action_italic) ImageView ivItalic;
-    @BindView(R.id.iv_action_underline) ImageView ivUnderline;
-    @BindView(R.id.iv_action_strikethrough) ImageView ivStrikethrough;
-
-    @BindView(R.id.iv_action_justify_left) ImageView ivJustifyLeft;
-    @BindView(R.id.iv_action_justify_center) ImageView ivJustifyCenter;
-    @BindView(R.id.iv_action_justify_right) ImageView ivJustifyRight;
-    @BindView(R.id.iv_action_justify_full) ImageView ivJustifyFull;
-
-    @BindView(R.id.iv_action_insert_numbers) ImageView ivOrdered;
-    @BindView(R.id.iv_action_insert_bullets) ImageView ivUnOrdered;
-
-    @BindView(R.id.iv_action_indent) ImageView ivIndent;
-    @BindView(R.id.iv_action_outdent) ImageView ivOutdent;
-
-    @BindView(R.id.iv_action_subscript) ImageView ivSubScript;
-    @BindView(R.id.iv_action_superscript) ImageView ivSuperScript;
-
-    @BindView(R.id.iv_action_insert_image) ImageView ivImage;
-    @BindView(R.id.iv_action_insert_link) ImageView ivLink;
-    @BindView(R.id.iv_action_table) ImageView ivTable;
-    @BindView(R.id.iv_action_line) ImageView ivLine;
-
-    @BindView(R.id.iv_action_blockquote) ImageView ivBlockQuote;
-    @BindView(R.id.iv_action_code_block) ImageView ivCodeBlock;
-
-    @BindView(R.id.iv_action_code_view) ImageView ivCodeView;
-
-    @BindView(R.id.ll_normal) LinearLayout llNormal;
-    @BindView(R.id.ll_h1) LinearLayout llH1;
-    @BindView(R.id.ll_h2) LinearLayout llH2;
-    @BindView(R.id.ll_h3) LinearLayout llH3;
-    @BindView(R.id.ll_h4) LinearLayout llH4;
-    @BindView(R.id.ll_h5) LinearLayout llH5;
-    @BindView(R.id.ll_h6) LinearLayout llH6;
-
     @BindView(R.id.cpv_font_text_color) ColorPaletteView cpvFontTextColor;
     @BindView(R.id.cpv_highlight_color) ColorPaletteView cpvHighlightColor;
     @BindView(R.id.tv_font_color_auto) TextView tvHighlightNone;
 
     private OnActionPerformListener mActionClickListener;
+
+    private Map<Integer, ActionType> mViewTypeMap = new HashMap<Integer, ActionType>() {
+        {
+            put(R.id.iv_action_bold, ActionType.BOLD);
+            put(R.id.iv_action_italic, ActionType.ITALIC);
+            put(R.id.iv_action_underline, ActionType.UNDERLINE);
+            put(R.id.iv_action_strikethrough, ActionType.STRIKETHROUGH);
+            put(R.id.iv_action_justify_left, ActionType.JUSTIFY_LEFT);
+            put(R.id.iv_action_justify_center, ActionType.JUSTIFY_CENTER);
+            put(R.id.iv_action_justify_right, ActionType.JUSTIFY_RIGHT);
+            put(R.id.iv_action_justify_full, ActionType.JUSTIFY_FULL);
+            put(R.id.iv_action_subscript, ActionType.SUBSCRIPT);
+            put(R.id.iv_action_superscript, ActionType.SUPERSCRIPT);
+            put(R.id.iv_action_insert_numbers, ActionType.ORDERED);
+            put(R.id.iv_action_insert_bullets, ActionType.UNORDERED);
+            put(R.id.iv_action_indent, ActionType.INDENT);
+            put(R.id.iv_action_outdent, ActionType.OUTDENT);
+            put(R.id.iv_action_code_view, ActionType.CODE_VIEW);
+            put(R.id.iv_action_blockquote, ActionType.BLOCK_QUOTE);
+            put(R.id.iv_action_code_block, ActionType.BLOCK_CODE);
+            put(R.id.ll_normal, ActionType.NORMAL);
+            put(R.id.ll_h1, ActionType.H1);
+            put(R.id.ll_h2, ActionType.H2);
+            put(R.id.ll_h3, ActionType.H3);
+            put(R.id.ll_h4, ActionType.H4);
+            put(R.id.ll_h5, ActionType.H5);
+            put(R.id.ll_h6, ActionType.H6);
+            put(R.id.iv_action_insert_image, ActionType.IMAGE);
+            put(R.id.iv_action_insert_link, ActionType.LINK);
+            put(R.id.iv_action_table, ActionType.TABLE);
+            put(R.id.iv_action_line, ActionType.LINE);
+        }
+    };
 
     @Nullable @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -123,230 +122,24 @@ public class EditorMenuFragment extends Fragment {
                 openFontSettingFragment(FontSettingFragment.TYPE_LINE_HGEIGHT);
             }
         });
+    }
 
-        ivBold.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.BOLD);
-                }
-            }
-        });
+    @OnClick({
+        R.id.iv_action_bold, R.id.iv_action_italic, R.id.iv_action_underline,
+        R.id.iv_action_strikethrough, R.id.iv_action_justify_left, R.id.iv_action_justify_center,
+        R.id.iv_action_justify_right, R.id.iv_action_justify_full, R.id.iv_action_subscript,
+        R.id.iv_action_superscript, R.id.iv_action_insert_numbers, R.id.iv_action_insert_bullets,
+        R.id.iv_action_indent, R.id.iv_action_outdent, R.id.iv_action_code_view,
+        R.id.iv_action_blockquote, R.id.iv_action_code_block, R.id.ll_normal, R.id.ll_h1,
+        R.id.ll_h2, R.id.ll_h3, R.id.ll_h4, R.id.ll_h5, R.id.ll_h6, R.id.iv_action_insert_image,
+        R.id.iv_action_insert_link, R.id.iv_action_table, R.id.iv_action_line
+    }) void onClickAction(View view) {
+        if (mActionClickListener == null) {
+            return;
+        }
 
-        ivItalic.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.ITALIC);
-                }
-            }
-        });
-
-        ivUnderline.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.UNDERLINE);
-                }
-            }
-        });
-
-        ivStrikethrough.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.STRIKETHROUGH);
-                }
-            }
-        });
-
-        ivJustifyLeft.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.JUSTIFY_LEFT);
-                }
-            }
-        });
-
-        ivJustifyCenter.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.JUSTIFY_CENTER);
-                }
-            }
-        });
-
-        ivJustifyRight.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.JUSTIFY_RIGHT);
-                }
-            }
-        });
-
-        ivJustifyFull.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.JUSTIFY_FULL);
-                }
-            }
-        });
-
-        ivSubScript.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.SUBSCRIPT);
-                }
-            }
-        });
-
-        ivSuperScript.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.SUPERSCRIPT);
-                }
-            }
-        });
-
-        ivCodeView.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.CODE_VIEW);
-                }
-            }
-        });
-
-        ivUnOrdered.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.UNORDERED);
-                }
-            }
-        });
-
-        ivOrdered.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.ORDERED);
-                }
-            }
-        });
-
-        ivIndent.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.INDENT);
-                }
-            }
-        });
-
-        ivOutdent.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.OUTDENT);
-                }
-            }
-        });
-
-        ivImage.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.IMAGE);
-                }
-            }
-        });
-
-        ivLink.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.LINK);
-                }
-            }
-        });
-
-        ivTable.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.TABLE);
-                }
-            }
-        });
-
-        ivLine.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.LINE);
-                }
-            }
-        });
-
-        ivBlockQuote.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.BLOCK_QUOTE);
-                }
-            }
-        });
-
-        ivCodeBlock.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.BLOCK_CODE);
-                }
-            }
-        });
-
-        llNormal.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.NORMAL);
-                }
-            }
-        });
-
-        llH1.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.H1);
-                }
-            }
-        });
-
-        llH2.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.H2);
-                }
-            }
-        });
-
-        llH3.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.H3);
-                }
-            }
-        });
-
-        llH4.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.H4);
-                }
-            }
-        });
-
-        llH5.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.H5);
-                }
-            }
-        });
-
-        llH6.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.H6);
-                }
-            }
-        });
+        ActionType type = mViewTypeMap.get(view.getId());
+        mActionClickListener.onActionPerform(type);
     }
 
     private void openFontSettingFragment(final int type) {
@@ -387,73 +180,45 @@ public class EditorMenuFragment extends Fragment {
     }
 
     public void updateActionStates(ActionType type, boolean isActive) {
+        View view = null;
+        for (Map.Entry<Integer, ActionType> e : mViewTypeMap.entrySet()) {
+            Integer key = e.getKey();
+            if (e.getValue() == type) {
+                view = rootView.findViewById(key);
+                break;
+            }
+        }
         switch (type) {
             case BOLD:
-                updateButtonStates(ivBold, isActive);
-                break;
             case ITALIC:
-                updateButtonStates(ivItalic, isActive);
-                break;
             case UNDERLINE:
-                updateButtonStates(ivUnderline, isActive);
-                break;
             case SUBSCRIPT:
-                updateButtonStates(ivSubScript, isActive);
-                break;
             case SUPERSCRIPT:
-                updateButtonStates(ivSuperScript, isActive);
-                break;
             case STRIKETHROUGH:
-                updateButtonStates(ivStrikethrough, isActive);
-                break;
             case JUSTIFY_LEFT:
-                updateButtonStates(ivJustifyLeft, isActive);
-                break;
             case JUSTIFY_CENTER:
-                updateButtonStates(ivJustifyCenter, isActive);
-                break;
             case JUSTIFY_RIGHT:
-                updateButtonStates(ivJustifyRight, isActive);
-                break;
             case JUSTIFY_FULL:
-                updateButtonStates(ivJustifyFull, isActive);
+            case ORDERED:
+            case CODE_VIEW:
+            case UNORDERED:
+                updateButtonStates(view, isActive);
                 break;
             case NORMAL:
-                changeStyleBackground(llNormal, isActive);
-                break;
             case H1:
-                changeStyleBackground(llH1, isActive);
-                break;
             case H2:
-                changeStyleBackground(llH2, isActive);
-                break;
             case H3:
-                changeStyleBackground(llH3, isActive);
-                break;
             case H4:
-                changeStyleBackground(llH4, isActive);
-                break;
             case H5:
-                changeStyleBackground(llH5, isActive);
-                break;
             case H6:
-                changeStyleBackground(llH6, isActive);
-                break;
-            case ORDERED:
-                updateButtonStates(ivOrdered, isActive);
-                break;
-            case UNORDERED:
-                updateButtonStates(ivUnOrdered, isActive);
-                break;
-            case CODE_VIEW:
-                updateButtonStates(ivCodeView, isActive);
+                changeStyleBackground(view, isActive);
                 break;
             default:
                 break;
         }
     }
 
-    public void updateFontFamilyStates(final String font) {
+    private void updateFontFamilyStates(final String font) {
         rootView.post(new Runnable() {
             @Override public void run() {
                 tvFontName.setText(font);
@@ -461,7 +226,7 @@ public class EditorMenuFragment extends Fragment {
         });
     }
 
-    public void updateFontStates(final ActionType type, final double value) {
+    private void updateFontStates(final ActionType type, final double value) {
         rootView.post(new Runnable() {
             @Override public void run() {
                 switch (type) {
@@ -478,29 +243,10 @@ public class EditorMenuFragment extends Fragment {
         });
     }
 
-    public void updateFontColorStates(final ActionType type, final String color) {
+    private void updateFontColorStates(final ActionType type, final String color) {
         rootView.post(new Runnable() {
             @Override public void run() {
-                String selectedColor = null;
-                switch (color) {
-                    case "rgb(0, 0, 0)":
-                        selectedColor = "#000000";
-                        break;
-                    case "rgb(33, 150, 243)":
-                        selectedColor = "#2196F3";
-                        break;
-                    case "rgb(76, 175, 80)":
-                        selectedColor = "#4CAF50";
-                        break;
-                    case "rgb(255, 235, 59)":
-                        selectedColor = "#FFEB3B";
-                        break;
-                    case "rgb(244, 67, 54)":
-                        selectedColor = "#F44336";
-                        break;
-                    case "rgb(255, 255, 255)":
-                        selectedColor = "#FFFFFF";
-                }
+                String selectedColor = rgbToHex(color);
                 if (selectedColor != null) {
                     if (type == ActionType.FORE_COLOR) {
                         cpvFontTextColor.setSelectedColor(selectedColor);
@@ -512,13 +258,25 @@ public class EditorMenuFragment extends Fragment {
         });
     }
 
-    private void updateButtonStates(final ImageView iv, final boolean isActive) {
+    public static String rgbToHex(String rgb) {
+        Pattern c = Pattern.compile("rgb *\\( *([0-9]+), *([0-9]+), *([0-9]+) *\\)");
+        Matcher m = c.matcher(rgb);
+        if (m.matches()) {
+            return String.format("#%02x%02x%02x", Integer.valueOf(m.group(1)),
+                Integer.valueOf(m.group(2)), Integer.valueOf(m.group(3)));
+        }
+        return null;
+    }
+
+    private void updateButtonStates(final View view, final boolean isActive) {
         rootView.post(new Runnable() {
             @Override public void run() {
                 if (isActive) {
-                    iv.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorAccent));
+                    ((ImageView) view).setColorFilter(
+                        ContextCompat.getColor(getContext(), R.color.colorAccent));
                 } else {
-                    iv.setColorFilter(ContextCompat.getColor(getContext(), R.color.tintColor));
+                    ((ImageView) view).setColorFilter(
+                        ContextCompat.getColor(getContext(), R.color.tintColor));
                 }
             }
         });
