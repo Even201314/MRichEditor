@@ -432,6 +432,18 @@ public class EditorMenuFragment extends Fragment {
         }
     }
 
+    public void updateJustifyStates(ActionType type) {
+        updateActionStates(ActionType.JUSTIFY_LEFT, type == ActionType.JUSTIFY_LEFT);
+        updateActionStates(ActionType.JUSTIFY_CENTER, type == ActionType.JUSTIFY_CENTER);
+        updateActionStates(ActionType.JUSTIFY_RIGHT, type == ActionType.JUSTIFY_RIGHT);
+        updateActionStates(ActionType.JUSTIFY_FULL, type == ActionType.JUSTIFY_FULL);
+    }
+
+    public void updateListStyleStates(ActionType type) {
+        updateActionStates(ActionType.UNORDERED, type == ActionType.UNORDERED);
+        updateActionStates(ActionType.ORDERED, type == ActionType.ORDERED);
+    }
+
     public void updateFontFamilyStates(final String font) {
         rootView.post(new Runnable() {
             @Override public void run() {
@@ -527,5 +539,52 @@ public class EditorMenuFragment extends Fragment {
 
     public void setActionClickListener(OnActionPerformListener mActionClickListener) {
         this.mActionClickListener = mActionClickListener;
+    }
+
+    public void updateActionStates(ActionType type, final String value) {
+        switch (type) {
+            case FAMILY:
+                updateFontFamilyStates(value);
+                break;
+            case SIZE:
+                updateFontStates(ActionType.SIZE, Double.valueOf(value));
+                break;
+            case FORE_COLOR:
+            case BACK_COLOR:
+                updateFontColorStates(type, value);
+                break;
+            case LINE_HEIGHT:
+                updateFontStates(ActionType.LINE_HEIGHT, Double.valueOf(value));
+                break;
+            case JUSTIFY_LEFT:
+            case JUSTIFY_CENTER:
+            case JUSTIFY_RIGHT:
+            case JUSTIFY_FULL:
+                updateJustifyStates(type);
+                break;
+            case BOLD:
+            case ITALIC:
+            case UNDERLINE:
+            case SUBSCRIPT:
+            case SUPERSCRIPT:
+            case STRIKETHROUGH:
+                updateActionStates(type, Boolean.valueOf(value));
+                break;
+            case NORMAL:
+            case H1:
+            case H2:
+            case H3:
+            case H4:
+            case H5:
+            case H6:
+                updateStyleStates(type);
+                break;
+            case ORDERED:
+            case UNORDERED:
+                updateListStyleStates(type);
+                break;
+            default:
+                break;
+        }
     }
 }

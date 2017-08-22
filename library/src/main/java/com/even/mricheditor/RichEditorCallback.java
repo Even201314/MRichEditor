@@ -3,6 +3,8 @@ package com.even.mricheditor;
 import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
 import com.google.gson.Gson;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Rich Editor Callback
@@ -13,6 +15,15 @@ public abstract class RichEditorCallback {
     private Gson gson = new Gson();
     private FontStyle mFontStyle = new FontStyle();
     private String html;
+
+    private List<ActionType> mFontBlockGroup =
+        Arrays.asList(ActionType.NORMAL, ActionType.H1, ActionType.H2, ActionType.H3, ActionType.H4,
+            ActionType.H5, ActionType.H6);
+    private List<ActionType> mTextAlignGroup =
+        Arrays.asList(ActionType.JUSTIFY_LEFT, ActionType.JUSTIFY_CENTER, ActionType.JUSTIFY_RIGHT,
+            ActionType.JUSTIFY_FULL);
+    private List<ActionType> mListStyleGroup =
+        Arrays.asList(ActionType.ORDERED, ActionType.UNORDERED);
 
     @JavascriptInterface public void returnHtml(String html) {
         this.html = html;
@@ -53,7 +64,10 @@ public abstract class RichEditorCallback {
         }
 
         if (mFontStyle.getTextAlign() != fontStyle.getTextAlign()) {
-            notifyFontStyleChange(fontStyle.getTextAlign(), null);
+            for (int i = 0, size = mTextAlignGroup.size(); i < size; i++) {
+                ActionType type = mTextAlignGroup.get(i);
+                notifyFontStyleChange(type, String.valueOf(type == fontStyle.getTextAlign()));
+            }
         }
 
         if (mFontStyle.getLineHeight() != fontStyle.getLineHeight()) {
@@ -88,11 +102,17 @@ public abstract class RichEditorCallback {
         }
 
         if (mFontStyle.getFontBlock() != fontStyle.getFontBlock()) {
-            notifyFontStyleChange(fontStyle.getFontBlock(), null);
+            for (int i = 0, size = mFontBlockGroup.size(); i < size; i++) {
+                ActionType type = mFontBlockGroup.get(i);
+                notifyFontStyleChange(type, String.valueOf(type == fontStyle.getFontBlock()));
+            }
         }
 
         if (mFontStyle.getListStyle() != fontStyle.getListStyle()) {
-            notifyFontStyleChange(fontStyle.getListStyle(), null);
+            for (int i = 0, size = mListStyleGroup.size(); i < size; i++) {
+                ActionType type = mListStyleGroup.get(i);
+                notifyFontStyleChange(type, String.valueOf(type == fontStyle.getListStyle()));
+            }
         }
 
         mFontStyle = fontStyle;

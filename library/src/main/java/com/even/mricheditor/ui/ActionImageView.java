@@ -238,13 +238,12 @@ public class ActionImageView extends AppCompatImageView {
         post(new Runnable() {
             @Override public void run() {
                 switch (type) {
-                    case JUSTIFY_LEFT:
-                    case JUSTIFY_CENTER:
-                    case JUSTIFY_RIGHT:
-                    case JUSTIFY_FULL:
-                        setColorFilter(ContextCompat.getColor(mContext,
-                            type == mActionType ? getActivatedColor() : getDeactivatedColor()));
-                        break;
+                    case BOLD:
+                    case ITALIC:
+                    case UNDERLINE:
+                    case SUBSCRIPT:
+                    case SUPERSCRIPT:
+                    case STRIKETHROUGH:
                     case NORMAL:
                     case H1:
                     case H2:
@@ -252,20 +251,12 @@ public class ActionImageView extends AppCompatImageView {
                     case H4:
                     case H5:
                     case H6:
-                        setColorFilter(ContextCompat.getColor(mContext,
-                            type == mActionType ? getActivatedColor() : getDeactivatedColor()));
-                        break;
+                    case JUSTIFY_LEFT:
+                    case JUSTIFY_CENTER:
+                    case JUSTIFY_RIGHT:
+                    case JUSTIFY_FULL:
                     case ORDERED:
                     case UNORDERED:
-                        setColorFilter(ContextCompat.getColor(mContext,
-                            type == mActionType ? getActivatedColor() : getDeactivatedColor()));
-                        break;
-                    case BOLD:
-                    case ITALIC:
-                    case UNDERLINE:
-                    case SUBSCRIPT:
-                    case SUPERSCRIPT:
-                    case STRIKETHROUGH:
                         setColorFilter(ContextCompat.getColor(mContext,
                             Boolean.valueOf(value) ? getActivatedColor() : getDeactivatedColor()));
                         break;

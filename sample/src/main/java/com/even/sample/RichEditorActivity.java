@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
@@ -87,8 +88,14 @@ import java.util.List;
         initImageLoader();
         initView();
 
+        int width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40,
+            getResources().getDisplayMetrics());
+        int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 9,
+            getResources().getDisplayMetrics());
         for (int i = 0, size = mActionTypeList.size(); i < size; i++) {
             final ActionImageView actionImageView = new ActionImageView(this);
+            actionImageView.setLayoutParams(new LinearLayout.LayoutParams(width, width));
+            actionImageView.setPadding(padding, padding, padding, padding);
             actionImageView.setActionType(mActionTypeList.get(i));
             actionImageView.setTag(mActionTypeList.get(i));
             actionImageView.setActivatedColor(R.color.colorAccent);
@@ -273,72 +280,10 @@ import java.util.List;
                 actionImageView.notifyFontStyleChange(type, value);
             }
 
-            switch (type) {
-                case FAMILY:
-                    mEditorMenuFragment.updateFontFamilyStates(value);
-                    break;
-                case SIZE:
-                    mEditorMenuFragment.updateFontStates(ActionType.SIZE, Double.valueOf(value));
-                    break;
-                case FORE_COLOR:
-                case BACK_COLOR:
-                    mEditorMenuFragment.updateFontColorStates(type, value);
-                    break;
-                case LINE_HEIGHT:
-                    mEditorMenuFragment.updateFontStates(ActionType.LINE_HEIGHT,
-                        Double.valueOf(value));
-                    break;
-                case JUSTIFY_LEFT:
-                case JUSTIFY_CENTER:
-                case JUSTIFY_RIGHT:
-                case JUSTIFY_FULL:
-                    updateJustifyStates(type);
-                    break;
-                case BOLD:
-                case ITALIC:
-                case UNDERLINE:
-                case SUBSCRIPT:
-                case SUPERSCRIPT:
-                case STRIKETHROUGH:
-                    updateButtonStates(type, Boolean.valueOf(value));
-                    break;
-                case NORMAL:
-                case H1:
-                case H2:
-                case H3:
-                case H4:
-                case H5:
-                case H6:
-                    mEditorMenuFragment.updateStyleStates(type);
-                    break;
-                case ORDERED:
-                case UNORDERED:
-                    updateListStyleStates(type);
-                    break;
-                default:
-                    break;
+            if (mEditorMenuFragment != null) {
+                mEditorMenuFragment.updateActionStates(type, value);
             }
         }
-    }
-
-    private void updateJustifyStates(ActionType type) {
-        mEditorMenuFragment.updateActionStates(ActionType.JUSTIFY_LEFT,
-            type == ActionType.JUSTIFY_LEFT);
-        mEditorMenuFragment.updateActionStates(ActionType.JUSTIFY_CENTER,
-            type == ActionType.JUSTIFY_CENTER);
-        mEditorMenuFragment.updateActionStates(ActionType.JUSTIFY_RIGHT,
-            type == ActionType.JUSTIFY_RIGHT);
-        mEditorMenuFragment.updateActionStates(ActionType.JUSTIFY_FULL,
-            type == ActionType.JUSTIFY_FULL);
-    }
-
-    private void updateListStyleStates(ActionType type) {
-        mEditorMenuFragment.updateActionStates(ActionType.UNORDERED, type == ActionType.UNORDERED);
-        mEditorMenuFragment.updateActionStates(ActionType.ORDERED, type == ActionType.ORDERED);
-    }
-
-    private void updateButtonStates(ActionType type, boolean isActive) {
-        mEditorMenuFragment.updateActionStates(type, isActive);
     }
 
     public class MOnActionPerformListener implements OnActionPerformListener {
