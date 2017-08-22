@@ -319,6 +319,15 @@ import java.util.List;
                 case FAMILY:
                     mRichEditorAction.fontName(value);
                     break;
+                case IMAGE:
+                    ivImage.performClick();
+                    break;
+                case LINK:
+                    ivLink.performClick();
+                    break;
+                case TABLE:
+                    ivTable.performClick();
+                    break;
                 case BOLD:
                 case ITALIC:
                 case UNDERLINE:
@@ -343,22 +352,12 @@ import java.util.List;
                 case H4:
                 case H5:
                 case H6:
+                case LINE:
                     ActionImageView actionImageView =
                         (ActionImageView) llActionBarContainer.findViewWithTag(type);
                     if (actionImageView != null) {
                         actionImageView.performClick();
                     }
-                    break;
-                case IMAGE:
-                    ivImage.performClick();
-                    break;
-                case LINK:
-                    ivLink.performClick();
-                    break;
-                case TABLE:
-                    ivTable.performClick();
-                    break;
-                case LINE:
                     break;
                 default:
                     break;

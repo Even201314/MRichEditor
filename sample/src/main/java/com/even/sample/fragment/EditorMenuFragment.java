@@ -418,6 +418,27 @@ public class EditorMenuFragment extends Fragment {
             case JUSTIFY_FULL:
                 updateButtonStates(ivJustifyFull, isActive);
                 break;
+            case NORMAL:
+                changeStyleBackground(llNormal, isActive);
+                break;
+            case H1:
+                changeStyleBackground(llH1, isActive);
+                break;
+            case H2:
+                changeStyleBackground(llH2, isActive);
+                break;
+            case H3:
+                changeStyleBackground(llH3, isActive);
+                break;
+            case H4:
+                changeStyleBackground(llH4, isActive);
+                break;
+            case H5:
+                changeStyleBackground(llH5, isActive);
+                break;
+            case H6:
+                changeStyleBackground(llH6, isActive);
+                break;
             case ORDERED:
                 updateButtonStates(ivOrdered, isActive);
                 break;
@@ -430,18 +451,6 @@ public class EditorMenuFragment extends Fragment {
             default:
                 break;
         }
-    }
-
-    public void updateJustifyStates(ActionType type) {
-        updateActionStates(ActionType.JUSTIFY_LEFT, type == ActionType.JUSTIFY_LEFT);
-        updateActionStates(ActionType.JUSTIFY_CENTER, type == ActionType.JUSTIFY_CENTER);
-        updateActionStates(ActionType.JUSTIFY_RIGHT, type == ActionType.JUSTIFY_RIGHT);
-        updateActionStates(ActionType.JUSTIFY_FULL, type == ActionType.JUSTIFY_FULL);
-    }
-
-    public void updateListStyleStates(ActionType type) {
-        updateActionStates(ActionType.UNORDERED, type == ActionType.UNORDERED);
-        updateActionStates(ActionType.ORDERED, type == ActionType.ORDERED);
     }
 
     public void updateFontFamilyStates(final String font) {
@@ -503,16 +512,6 @@ public class EditorMenuFragment extends Fragment {
         });
     }
 
-    public void updateStyleStates(ActionType type) {
-        changeStyleBackground(llNormal, type == ActionType.NORMAL);
-        changeStyleBackground(llH1, type == ActionType.H1);
-        changeStyleBackground(llH2, type == ActionType.H2);
-        changeStyleBackground(llH3, type == ActionType.H3);
-        changeStyleBackground(llH4, type == ActionType.H4);
-        changeStyleBackground(llH5, type == ActionType.H5);
-        changeStyleBackground(llH6, type == ActionType.H6);
-    }
-
     private void updateButtonStates(final ImageView iv, final boolean isActive) {
         rootView.post(new Runnable() {
             @Override public void run() {
@@ -556,20 +555,16 @@ public class EditorMenuFragment extends Fragment {
             case LINE_HEIGHT:
                 updateFontStates(ActionType.LINE_HEIGHT, Double.valueOf(value));
                 break;
-            case JUSTIFY_LEFT:
-            case JUSTIFY_CENTER:
-            case JUSTIFY_RIGHT:
-            case JUSTIFY_FULL:
-                updateJustifyStates(type);
-                break;
             case BOLD:
             case ITALIC:
             case UNDERLINE:
             case SUBSCRIPT:
             case SUPERSCRIPT:
             case STRIKETHROUGH:
-                updateActionStates(type, Boolean.valueOf(value));
-                break;
+            case JUSTIFY_LEFT:
+            case JUSTIFY_CENTER:
+            case JUSTIFY_RIGHT:
+            case JUSTIFY_FULL:
             case NORMAL:
             case H1:
             case H2:
@@ -577,11 +572,9 @@ public class EditorMenuFragment extends Fragment {
             case H4:
             case H5:
             case H6:
-                updateStyleStates(type);
-                break;
             case ORDERED:
             case UNORDERED:
-                updateListStyleStates(type);
+                updateActionStates(type, Boolean.valueOf(value));
                 break;
             default:
                 break;
