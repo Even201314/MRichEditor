@@ -98,7 +98,9 @@ public class ColorPaletteView extends LinearLayout {
         }
 
         this.selectedColor = selectedColor;
-        llColorContainer.findViewWithTag(selectedColor).setSelected(true);
+        if (llColorContainer.findViewWithTag(selectedColor) != null) {
+            llColorContainer.findViewWithTag(selectedColor).setSelected(true);
+        }
     }
 
     public void setOnColorChangeListener(OnColorChangeListener mOnColorChangeListener) {
