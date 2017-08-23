@@ -13,7 +13,6 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,29 +53,25 @@ import java.util.List;
 
     private List<ActionType> mActionTypeList =
         Arrays.asList(ActionType.BOLD, ActionType.ITALIC, ActionType.UNDERLINE,
-            ActionType.STRIKETHROUGH, ActionType.SUBSCRIPT, ActionType.SUPERSCRIPT, ActionType.H1,
-            ActionType.H2, ActionType.H3, ActionType.H4, ActionType.H5, ActionType.H6,
-            ActionType.INDENT, ActionType.OUTDENT, ActionType.JUSTIFY_LEFT,
-            ActionType.JUSTIFY_CENTER, ActionType.JUSTIFY_RIGHT, ActionType.JUSTIFY_FULL,
-            ActionType.ORDERED, ActionType.UNORDERED, ActionType.LINE, ActionType.BLOCK_CODE,
-            ActionType.BLOCK_QUOTE, ActionType.CODE_VIEW);
+            ActionType.STRIKETHROUGH, ActionType.SUBSCRIPT, ActionType.SUPERSCRIPT,
+            ActionType.NORMAL, ActionType.H1, ActionType.H2, ActionType.H3, ActionType.H4,
+            ActionType.H5, ActionType.H6, ActionType.INDENT, ActionType.OUTDENT,
+            ActionType.JUSTIFY_LEFT, ActionType.JUSTIFY_CENTER, ActionType.JUSTIFY_RIGHT,
+            ActionType.JUSTIFY_FULL, ActionType.ORDERED, ActionType.UNORDERED, ActionType.LINE,
+            ActionType.BLOCK_CODE, ActionType.BLOCK_QUOTE, ActionType.CODE_VIEW);
 
     private List<Integer> mActionTypeIconList =
         Arrays.asList(R.drawable.ic_format_bold, R.drawable.ic_format_italic,
             R.drawable.ic_format_underlined, R.drawable.ic_format_strikethrough,
             R.drawable.ic_format_subscript, R.drawable.ic_format_superscript,
-            R.drawable.ic_format_h1, R.drawable.ic_format_h2, R.drawable.ic_format_h3,
-            R.drawable.ic_format_h4, R.drawable.ic_format_h5, R.drawable.ic_format_h6,
-            R.drawable.ic_format_indent_decrease, R.drawable.ic_format_indent_increase,
-            R.drawable.ic_format_align_left, R.drawable.ic_format_align_center,
-            R.drawable.ic_format_align_right, R.drawable.ic_format_align_justify,
-            R.drawable.ic_format_list_numbered, R.drawable.ic_format_list_bulleted,
-            R.drawable.ic_line, R.drawable.ic_code_block, R.drawable.ic_format_quote,
-            R.drawable.ic_code_review);
-
-    @BindView(R.id.iv_action_insert_image) ImageView ivImage;
-    @BindView(R.id.iv_action_insert_link) ImageView ivLink;
-    @BindView(R.id.iv_action_table) ImageView ivTable;
+            R.drawable.ic_format_para, R.drawable.ic_format_h1, R.drawable.ic_format_h2,
+            R.drawable.ic_format_h3, R.drawable.ic_format_h4, R.drawable.ic_format_h5,
+            R.drawable.ic_format_h6, R.drawable.ic_format_indent_decrease,
+            R.drawable.ic_format_indent_increase, R.drawable.ic_format_align_left,
+            R.drawable.ic_format_align_center, R.drawable.ic_format_align_right,
+            R.drawable.ic_format_align_justify, R.drawable.ic_format_list_numbered,
+            R.drawable.ic_format_list_bulleted, R.drawable.ic_line, R.drawable.ic_code_block,
+            R.drawable.ic_format_quote, R.drawable.ic_code_review);
 
     private static final int REQUEST_CODE_CHOOSE = 0;
 
@@ -320,13 +315,13 @@ import java.util.List;
                     mRichEditorAction.fontName(value);
                     break;
                 case IMAGE:
-                    ivImage.performClick();
+                    onClickInsertImage();
                     break;
                 case LINK:
-                    ivLink.performClick();
+                    onClickInsertLink();
                     break;
                 case TABLE:
-                    ivTable.performClick();
+                    onClickInsertTable();
                     break;
                 case BOLD:
                 case ITALIC:

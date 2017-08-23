@@ -34,7 +34,6 @@ public class EditorMenuFragment extends Fragment {
     @BindView(R.id.tv_font_spacing) TextView tvFontSpacing;
     @BindView(R.id.cpv_font_text_color) ColorPaletteView cpvFontTextColor;
     @BindView(R.id.cpv_highlight_color) ColorPaletteView cpvHighlightColor;
-    @BindView(R.id.tv_font_color_auto) TextView tvHighlightNone;
 
     private OnActionPerformListener mActionClickListener;
 
@@ -81,12 +80,6 @@ public class EditorMenuFragment extends Fragment {
     }
 
     private void initView() {
-        rootView.findViewById(R.id.ll_font_size).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                openFontSettingFragment(FontSettingFragment.TYPE_SIZE);
-            }
-        });
-
         cpvFontTextColor.setOnColorChangeListener(new ColorPaletteView.OnColorChangeListener() {
             @Override public void onColorChange(String color) {
                 if (mActionClickListener != null) {
@@ -102,26 +95,18 @@ public class EditorMenuFragment extends Fragment {
                 }
             }
         });
+    }
 
-        tvHighlightNone.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.BACK_COLOR, "#FFFFFF");
-                }
-            }
-        });
+    @OnClick(R.id.ll_font_size) void onClickFontSize() {
+        openFontSettingFragment(FontSettingFragment.TYPE_SIZE);
+    }
 
-        tvFontName.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                openFontSettingFragment(FontSettingFragment.TYPE_FONT_FAMILY);
-            }
-        });
+    @OnClick(R.id.ll_line_height) void onClickLineHeight() {
+        openFontSettingFragment(FontSettingFragment.TYPE_LINE_HGEIGHT);
+    }
 
-        rootView.findViewById(R.id.ll_line_height).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                openFontSettingFragment(FontSettingFragment.TYPE_LINE_HGEIGHT);
-            }
-        });
+    @OnClick(R.id.tv_font_name) void onClickFontFamily() {
+        openFontSettingFragment(FontSettingFragment.TYPE_FONT_FAMILY);
     }
 
     @OnClick({
@@ -179,16 +164,83 @@ public class EditorMenuFragment extends Fragment {
             .commit();
     }
 
-    public void updateActionStates(ActionType type, boolean isActive) {
-        View view = null;
-        for (Map.Entry<Integer, ActionType> e : mViewTypeMap.entrySet()) {
-            Integer key = e.getKey();
-            if (e.getValue() == type) {
-                view = rootView.findViewById(key);
-                break;
+    public void updateActionStates(final ActionType type, final boolean isActive) {
+        rootView.post(new Runnable() {
+            @Override public void run() {
+                View view = null;
+                for (Map.Entry<Integer, ActionType> e : mViewTypeMap.entrySet()) {
+                    Integer key = e.getKey();
+                    if (e.getValue() == type) {
+                        view = rootView.findViewById(key);
+                        break;
+                    }
+                }
+
+                if (view == null) {
+                    return;
+                }
+
+                switch (type) {
+                    case BOLD:
+                    case ITALIC:
+                    case UNDERLINE:
+                    case SUBSCRIPT:
+                    case SUPERSCRIPT:
+                    case STRIKETHROUGH:
+                    case JUSTIFY_LEFT:
+                    case JUSTIFY_CENTER:
+                    case JUSTIFY_RIGHT:
+                    case JUSTIFY_FULL:
+                    case ORDERED:
+                    case CODE_VIEW:
+                    case UNORDERED:
+                        if (isActive) {
+                            ((ImageView) view).setColorFilter(
+                                ContextCompat.getColor(getContext(), R.color.colorAccent));
+                        } else {
+                            ((ImageView) view).setColorFilter(
+                                ContextCompat.getColor(getContext(), R.color.tintColor));
+                        }
+                        break;
+                    case NORMAL:
+                    case H1:
+                    case H2:
+                    case H3:
+                    case H4:
+                    case H5:
+                    case H6:
+                        if (isActive) {
+                            view.setBackgroundResource(R.drawable.round_rectangle_blue);
+                        } else {
+                            view.setBackgroundResource(R.drawable.round_rectangle_white);
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
-        }
+        });
+    }
+
+    public void setActionClickListener(OnActionPerformListener mActionClickListener) {
+        this.mActionClickListener = mActionClickListener;
+    }
+
+    public void updateActionStates(ActionType type, final String value) {
         switch (type) {
+            case FAMILY:
+                updateFontFamilyStates(value);
+                break;
+            case SIZE:
+                updateFontStates(ActionType.SIZE, Double.valueOf(value));
+                break;
+            case FORE_COLOR:
+            case BACK_COLOR:
+                updateFontColorStates(type, value);
+                break;
+            case LINE_HEIGHT:
+                updateFontStates(ActionType.LINE_HEIGHT, Double.valueOf(value));
+                break;
             case BOLD:
             case ITALIC:
             case UNDERLINE:
@@ -199,11 +251,6 @@ public class EditorMenuFragment extends Fragment {
             case JUSTIFY_CENTER:
             case JUSTIFY_RIGHT:
             case JUSTIFY_FULL:
-            case ORDERED:
-            case CODE_VIEW:
-            case UNORDERED:
-                updateButtonStates(view, isActive);
-                break;
             case NORMAL:
             case H1:
             case H2:
@@ -211,7 +258,9 @@ public class EditorMenuFragment extends Fragment {
             case H4:
             case H5:
             case H6:
-                changeStyleBackground(view, isActive);
+            case ORDERED:
+            case UNORDERED:
+                updateActionStates(type, Boolean.valueOf(value));
                 break;
             default:
                 break;
@@ -266,76 +315,5 @@ public class EditorMenuFragment extends Fragment {
                 Integer.valueOf(m.group(2)), Integer.valueOf(m.group(3)));
         }
         return null;
-    }
-
-    private void updateButtonStates(final View view, final boolean isActive) {
-        rootView.post(new Runnable() {
-            @Override public void run() {
-                if (isActive) {
-                    ((ImageView) view).setColorFilter(
-                        ContextCompat.getColor(getContext(), R.color.colorAccent));
-                } else {
-                    ((ImageView) view).setColorFilter(
-                        ContextCompat.getColor(getContext(), R.color.tintColor));
-                }
-            }
-        });
-    }
-
-    private void changeStyleBackground(final View view, final boolean isSelected) {
-        rootView.post(new Runnable() {
-            @Override public void run() {
-                if (isSelected) {
-                    view.setBackgroundResource(R.drawable.round_rectangle_blue);
-                } else {
-                    view.setBackgroundResource(R.drawable.round_rectangle_white);
-                }
-            }
-        });
-    }
-
-    public void setActionClickListener(OnActionPerformListener mActionClickListener) {
-        this.mActionClickListener = mActionClickListener;
-    }
-
-    public void updateActionStates(ActionType type, final String value) {
-        switch (type) {
-            case FAMILY:
-                updateFontFamilyStates(value);
-                break;
-            case SIZE:
-                updateFontStates(ActionType.SIZE, Double.valueOf(value));
-                break;
-            case FORE_COLOR:
-            case BACK_COLOR:
-                updateFontColorStates(type, value);
-                break;
-            case LINE_HEIGHT:
-                updateFontStates(ActionType.LINE_HEIGHT, Double.valueOf(value));
-                break;
-            case BOLD:
-            case ITALIC:
-            case UNDERLINE:
-            case SUBSCRIPT:
-            case SUPERSCRIPT:
-            case STRIKETHROUGH:
-            case JUSTIFY_LEFT:
-            case JUSTIFY_CENTER:
-            case JUSTIFY_RIGHT:
-            case JUSTIFY_FULL:
-            case NORMAL:
-            case H1:
-            case H2:
-            case H3:
-            case H4:
-            case H5:
-            case H6:
-            case ORDERED:
-            case UNORDERED:
-                updateActionStates(type, Boolean.valueOf(value));
-                break;
-            default:
-                break;
-        }
     }
 }

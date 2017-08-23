@@ -45,10 +45,10 @@ public class RoundView extends View {
     @Override protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setColor(backgroundColor);
         int width = canvas.getWidth();
         int height = canvas.getHeight();
+        mPaint.setStyle(Paint.Style.FILL);
+        mPaint.setColor(backgroundColor);
         canvas.drawCircle(width / 2, height / 2, width / 2, mPaint);
 
         if (isSelected) {
@@ -59,8 +59,8 @@ public class RoundView extends View {
         }
     }
 
-    public int getBackgroundColor() {
-        return backgroundColor;
+    public String getBackgroundColor() {
+        return String.format("#%06X", (0xFFFFFF & backgroundColor));
     }
 
     @Override public boolean isSelected() {

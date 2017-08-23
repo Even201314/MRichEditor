@@ -1,15 +1,19 @@
 package com.even.sample.widget;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import com.even.sample.R;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Color PaletteView
@@ -17,14 +21,21 @@ import com.even.sample.R;
  */
 
 public class ColorPaletteView extends LinearLayout {
-    @BindView(R.id.rv_color_black) RoundView rvColorBlack;
-    @BindView(R.id.rv_color_blue) RoundView rvColorBlue;
-    @BindView(R.id.rv_color_green) RoundView rvColorGreen;
-    @BindView(R.id.rv_color_yellow) RoundView rvColorYellow;
-    @BindView(R.id.rv_color_red) RoundView rvColorRed;
+    @BindView(R.id.ll_color_container) LinearLayout llColorContainer;
 
     private String selectedColor;
     private OnColorChangeListener mOnColorChangeListener;
+
+    private List<String> mColorList =
+        Arrays.asList("#000000", "#424242", "#636363", "#9C9C94", "#CEC6CE", "#EFEFEF", "#F7F7F7",
+            "#FFFFFF", "#FF0000", "#FF9C00", "#FFFF00", "#00FF00", "#00FFFF", "#0000FF", "#9C00FF",
+            "#FF00FF", "#F7C6CE", "#FFE7CE", "#FFEFC6", "#D6EFD6", "#CEDEE7", "#CEE7F7", "#D6D6E7",
+            "#E7D6DE", "#E79C9C", "#FFC69C", "#FFE79C", "#B5D6A5", "#A5C6CE", "#9CC6EF", "#B5A5D6",
+            "#D6A5BD", "#E76363", "#F7AD6B", "#FFD663", "#94BD7B", "#73A5AD", "#6BADDE", "#8C7BC6",
+            "#C67BA5", "#CE0000", "#E79439", "#EFC631", "#6BA54A", "#4A7B8C", "#3984C6", "#634AA5",
+            "#A54A7B", "#9C0000", "#B56308", "#BD9400", "#397B21", "#104A5A", "#085294", "#311873",
+            "#731842", "#630000", "#7B3900", "#846300", "#295218", "#083139", "#003163", "#21104A",
+            "#4A1031");
 
     public ColorPaletteView(Context context) {
         this(context, null);
@@ -40,41 +51,31 @@ public class ColorPaletteView extends LinearLayout {
     }
 
     private void init(Context context) {
-        View rootView =
+        final View rootView =
             LayoutInflater.from(context).inflate(R.layout.view_color_palette, this, true);
         ButterKnife.bind(this, rootView);
-    }
 
-    @OnClick({
-        R.id.rv_color_black, R.id.rv_color_blue, R.id.rv_color_green, R.id.rv_color_yellow,
-        R.id.rv_color_red
-    }) void onClickTextColor(RoundView view) {
-        rvColorBlack.setSelected(view.getId() == R.id.rv_color_black);
-        rvColorBlue.setSelected(view.getId() == R.id.rv_color_blue);
-        rvColorGreen.setSelected(view.getId() == R.id.rv_color_green);
-        rvColorYellow.setSelected(view.getId() == R.id.rv_color_yellow);
-        rvColorRed.setSelected(view.getId() == R.id.rv_color_red);
-
-        switch (view.getId()) {
-            case R.id.rv_color_black:
-                selectedColor = "#000000";
-                break;
-            case R.id.rv_color_blue:
-                selectedColor = "#2196F3";
-                break;
-            case R.id.rv_color_green:
-                selectedColor = "#4CAF50";
-                break;
-            case R.id.rv_color_yellow:
-                selectedColor = "#FFEB3B";
-                break;
-            case R.id.rv_color_red:
-                selectedColor = "#F44336";
-                break;
-        }
-
-        if (mOnColorChangeListener != null) {
-            mOnColorChangeListener.onColorChange(selectedColor);
+        int width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 25,
+            getResources().getDisplayMetrics());
+        int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10,
+            getResources().getDisplayMetrics());
+        for (int i = 0, size = mColorList.size(); i < size; i++) {
+            final RoundView roundView = new RoundView(context);
+            LayoutParams params = new LinearLayout.LayoutParams(width, width);
+            params.setMargins(margin, 0, margin, 0);
+            roundView.setLayoutParams(params);
+            final String color = mColorList.get(i);
+            roundView.setTag(color);
+            roundView.setBackgroundColor(Color.parseColor(color));
+            roundView.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    setSelectedColor(color);
+                    if (mOnColorChangeListener != null) {
+                        mOnColorChangeListener.onColorChange(roundView.getBackgroundColor());
+                    }
+                }
+            });
+            llColorContainer.addView(roundView);
         }
     }
 
@@ -83,12 +84,21 @@ public class ColorPaletteView extends LinearLayout {
     }
 
     public void setSelectedColor(String selectedColor) {
+        if (TextUtils.isEmpty(selectedColor)) {
+            return;
+        }
+
+        selectedColor = selectedColor.toUpperCase();
+        if (!TextUtils.isEmpty(this.selectedColor)) {
+            RoundView currentSelectedView =
+                (RoundView) llColorContainer.findViewWithTag(this.selectedColor);
+            if (currentSelectedView != null) {
+                currentSelectedView.setSelected(this.selectedColor.equalsIgnoreCase(selectedColor));
+            }
+        }
+
         this.selectedColor = selectedColor;
-        rvColorBlack.setSelected("#000000".equalsIgnoreCase(selectedColor));
-        rvColorBlue.setSelected("#2196F3".equalsIgnoreCase(selectedColor));
-        rvColorGreen.setSelected("#4CAF50".equalsIgnoreCase(selectedColor));
-        rvColorYellow.setSelected("#FFEB3B".equalsIgnoreCase(selectedColor));
-        rvColorRed.setSelected("#F44336".equalsIgnoreCase(selectedColor));
+        llColorContainer.findViewWithTag(selectedColor).setSelected(true);
     }
 
     public void setOnColorChangeListener(OnColorChangeListener mOnColorChangeListener) {
