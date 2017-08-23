@@ -141,8 +141,13 @@ public class RichEditorAction {
         load("javascript:lineHeight(" + lineHeight + ")");
     }
 
-    public void insertImage(String imageUrl) {
-        load("javascript:insertImage('" + imageUrl + "')");
+    public void insertImageUrl(String imageUrl) {
+        load("javascript:insertImageUrl('" + imageUrl + "')");
+    }
+
+    public void insertImageData(String fileName, String base64Str) {
+        String imageUrl = "data:image/" + fileName.split("\\.")[1] + ";base64," + base64Str;
+        load("javascript:insertImageUrl('" + imageUrl + "')");
     }
 
     public void insertText(String text) {

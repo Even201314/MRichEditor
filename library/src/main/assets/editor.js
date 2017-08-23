@@ -154,7 +154,7 @@ var lineHeight = function(lineHeight) {
     $('#summernote').summernote('lineHeight', lineHeight);
 };
 
-var insertImage = function(imageUrl) {
+var insertImageUrl = function(imageUrl) {
     $('#summernote').summernote('insertImage', imageUrl, null);
 };
 

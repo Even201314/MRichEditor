@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import com.even.sample.interfaces.OnActionPerformListener;
 import com.even.sample.keyboard.KeyboardHeightObserver;
 import com.even.sample.keyboard.KeyboardHeightProvider;
 import com.even.sample.keyboard.KeyboardUtils;
+import com.even.sample.util.FileIOUtil;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
@@ -203,11 +205,23 @@ import java.util.List;
             ArrayList<ImageItem> images =
                 (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
             if (images != null && !images.isEmpty()) {
-                //Upload the image,and return the URL
-                mRichEditorAction.insertImage(
-                    "https://avatars0.githubusercontent.com/u/5581118?v=4&u=b7ea903e397678b3675e2a15b0b6d0944f6f129e&s=400");
+
+                //1.Insert the Base64 String (Base64.NO_WRAP)
+                ImageItem imageItem = images.get(0);
+                mRichEditorAction.insertImageData(imageItem.name,
+                    encodeFileToBase64Binary(imageItem.path));
+
+                //2.Insert the ImageUrl
+                //mRichEditorAction.insertImageUrl(
+                //    "https://avatars0.githubusercontent.com/u/5581118?v=4&u=b7ea903e397678b3675e2a15b0b6d0944f6f129e&s=400");
             }
         }
+    }
+
+    private static String encodeFileToBase64Binary(String filePath) {
+        byte[] bytes = FileIOUtil.readFile2BytesByStream(filePath);
+        byte[] encoded = Base64.encode(bytes, Base64.NO_WRAP);
+        return new String(encoded);
     }
 
     @OnClick(R.id.iv_action_insert_link) void onClickInsertLink() {
