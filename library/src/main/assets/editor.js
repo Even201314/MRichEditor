@@ -24,6 +24,13 @@ var enable = function(){
 
 var pasteHTML = function(html){
     $('#summernote').summernote('code',html);
+    keepLastIndex(document.getElementsByClassName('note-editable panel-body')[0]);
+}
+
+function keepLastIndex(obj) {
+    var range = window.getSelection();//创建range
+    range.selectAllChildren(obj);//range 选择obj下所有子内容
+    range.collapseToEnd();//光标移至最后
 }
 
 var refreshHTML = function(){

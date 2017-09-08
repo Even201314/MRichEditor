@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.TypedValue;
 import android.view.View;
@@ -47,6 +48,7 @@ import java.util.List;
     /** The keyboard height provider */
     private KeyboardHeightProvider keyboardHeightProvider;
     private boolean isKeyboardShowing;
+    private String htmlContent = "<p>Hello World</p>";
 
     private RichEditorAction mRichEditorAction;
     private RichEditorCallback mRichEditorCallback;
@@ -145,7 +147,7 @@ import java.util.List;
             }
         });
 
-        mWebView.setWebChromeClient(new WebChromeClient());
+        mWebView.setWebChromeClient(new CustomWebChromeClient());
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.getSettings().setDomStorageEnabled(true);
         mRichEditorCallback = new MRichEditorCallback();
@@ -159,6 +161,22 @@ import java.util.List;
                 keyboardHeightProvider.start();
             }
         });
+    }
+
+    private class CustomWebChromeClient extends WebChromeClient {
+        @Override public void onProgressChanged(WebView view, int newProgress) {
+            super.onProgressChanged(view, newProgress);
+            if (newProgress == 100) {
+                if (!TextUtils.isEmpty(htmlContent)) {
+                    mRichEditorAction.insertHtml(htmlContent);
+                }
+                KeyboardUtils.showSoftInput(RichEditorActivity.this);
+            }
+        }
+
+        @Override public void onReceivedTitle(WebView view, String title) {
+            super.onReceivedTitle(view, title);
+        }
     }
 
     @OnClick(R.id.iv_action) void onClickAction() {
