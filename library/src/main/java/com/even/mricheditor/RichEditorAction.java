@@ -1,6 +1,7 @@
 package com.even.mricheditor;
 
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.webkit.WebView;
 
 /**
@@ -186,7 +187,9 @@ public class RichEditorAction {
         load("javascript:pasteHTML('" + html + "')");
     }
 
-    public void refreshHtml(RichEditorCallback callback) {
+    public void refreshHtml(@NonNull RichEditorCallback callback,
+        @NonNull RichEditorCallback.OnGetHtmlListener onGetHtmlListener) {
+        callback.setOnGetHtmlListener(onGetHtmlListener);
         load("javascript:refreshHTML()");
     }
 

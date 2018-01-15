@@ -15,6 +15,7 @@ public abstract class RichEditorCallback {
     private Gson gson = new Gson();
     private FontStyle mFontStyle = new FontStyle();
     private String html;
+    private OnGetHtmlListener onGetHtmlListener;
 
     private List<ActionType> mFontBlockGroup =
         Arrays.asList(ActionType.NORMAL, ActionType.H1, ActionType.H2, ActionType.H3, ActionType.H4,
@@ -27,6 +28,9 @@ public abstract class RichEditorCallback {
 
     @JavascriptInterface public void returnHtml(String html) {
         this.html = html;
+        if (onGetHtmlListener != null) {
+            onGetHtmlListener.getHtml(html);
+        }
     }
 
     @JavascriptInterface public void updateCurrentStyle(String currentStyle) {
@@ -120,7 +124,15 @@ public abstract class RichEditorCallback {
 
     public abstract void notifyFontStyleChange(ActionType type, String value);
 
-    public String getHtml() {
-        return html;
+    public interface OnGetHtmlListener {
+        void getHtml(String html);
+    }
+
+    public OnGetHtmlListener getOnGetHtmlListener() {
+        return onGetHtmlListener;
+    }
+
+    public void setOnGetHtmlListener(OnGetHtmlListener onGetHtmlListener) {
+        this.onGetHtmlListener = onGetHtmlListener;
     }
 }

@@ -18,6 +18,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -190,6 +191,22 @@ import java.util.List;
             }
             flAction.setVisibility(View.VISIBLE);
         }
+    }
+
+    private RichEditorCallback.OnGetHtmlListener onGetHtmlListener =
+        new RichEditorCallback.OnGetHtmlListener() {
+            @Override public void getHtml(String html) {
+                if (TextUtils.isEmpty(html)) {
+                    Toast.makeText(RichEditorActivity.this, "Empty Html String", Toast.LENGTH_SHORT)
+                        .show();
+                    return;
+                }
+                Toast.makeText(RichEditorActivity.this, html, Toast.LENGTH_SHORT).show();
+            }
+        };
+
+    @OnClick(R.id.iv_get_html) void onClickGetHtml() {
+        mRichEditorAction.refreshHtml(mRichEditorCallback, onGetHtmlListener);
     }
 
     @OnClick(R.id.iv_action_undo) void onClickUndo() {
