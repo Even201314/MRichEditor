@@ -2,9 +2,9 @@ package com.even.mricheditor.ui;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatImageView;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import com.even.mricheditor.ActionType;
 import com.even.mricheditor.R;
@@ -160,6 +160,8 @@ public class ActionImageView extends AppCompatImageView {
             case CODE_VIEW:
                 mRichEditorAction.codeView();
                 break;
+            default:
+                break;
         }
     }
 
@@ -195,6 +197,8 @@ public class ActionImageView extends AppCompatImageView {
             case LINK:
                 break;
             case TABLE:
+                break;
+            default:
                 break;
         }
     }
@@ -258,7 +262,7 @@ public class ActionImageView extends AppCompatImageView {
                     case ORDERED:
                     case UNORDERED:
                         setColorFilter(ContextCompat.getColor(mContext,
-                            Boolean.valueOf(value) ? getActivatedColor() : getDeactivatedColor()));
+                            Boolean.parseBoolean(value) ? getActivatedColor() : getDeactivatedColor()));
                         break;
                     default:
                         break;

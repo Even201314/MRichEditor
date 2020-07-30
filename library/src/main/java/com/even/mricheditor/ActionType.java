@@ -1,12 +1,13 @@
 package com.even.mricheditor;
 
-import android.text.TextUtils;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Action Type
- * Created by even.wu on 8/8/17.
+ *
+ * @author even.wu
+ * @date 8/8/17
  */
 
 public enum ActionType {

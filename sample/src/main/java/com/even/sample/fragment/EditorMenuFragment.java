@@ -1,10 +1,10 @@
 package com.even.sample.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.core.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +36,9 @@ public class EditorMenuFragment extends Fragment {
     @BindView(R.id.cpv_highlight_color) ColorPaletteView cpvHighlightColor;
 
     private OnActionPerformListener mActionClickListener;
+
+    private final static Pattern PATTERN_RGB =
+        Pattern.compile("rgb *\\( *([0-9]+), *([0-9]+), *([0-9]+) *\\)");
 
     private Map<Integer, ActionType> mViewTypeMap = new HashMap<Integer, ActionType>() {
         {
@@ -308,8 +311,7 @@ public class EditorMenuFragment extends Fragment {
     }
 
     public static String rgbToHex(String rgb) {
-        Pattern c = Pattern.compile("rgb *\\( *([0-9]+), *([0-9]+), *([0-9]+) *\\)");
-        Matcher m = c.matcher(rgb);
+        Matcher m = PATTERN_RGB.matcher(rgb);
         if (m.matches()) {
             return String.format("#%02x%02x%02x", Integer.valueOf(m.group(1)),
                 Integer.valueOf(m.group(2)), Integer.valueOf(m.group(3)));

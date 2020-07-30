@@ -20,4 +20,5 @@
   <string name="heading_4">Heading 4</string>
   <string name="heading_5">Heading 5</string>
   <string name="heading_6">Heading 6</string>
+    <string name="m_rich_editor">MRichEditor</string>
 </resources>
