@@ -1,16 +1,12 @@
 package com.even.sample;
 
 import android.annotation.SuppressLint;
-import android.app.Instrumentation;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import androidx.fragment.app.FragmentManager;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.TypedValue;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
@@ -19,9 +15,12 @@ import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.blankj.utilcode.util.KeyboardUtils;
 import com.even.mricheditor.ActionType;
 import com.even.mricheditor.RichEditorAction;
 import com.even.mricheditor.RichEditorCallback;
@@ -30,9 +29,6 @@ import com.even.sample.fragment.EditHyperlinkFragment;
 import com.even.sample.fragment.EditTableFragment;
 import com.even.sample.fragment.EditorMenuFragment;
 import com.even.sample.interfaces.OnActionPerformListener;
-import com.even.sample.keyboard.KeyboardHeightObserver;
-import com.even.sample.keyboard.KeyboardHeightProvider;
-import com.even.sample.keyboard.KeyboardUtils;
 import com.even.sample.util.FileIOUtil;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
@@ -42,14 +38,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@SuppressLint("SetJavaScriptEnabled") public class RichEditorActivity extends AppCompatActivity
-    implements KeyboardHeightObserver {
+@SuppressLint("SetJavaScriptEnabled") public class RichEditorActivity extends AppCompatActivity {
     @BindView(R.id.wv_container) WebView mWebView;
     @BindView(R.id.fl_action) FrameLayout flAction;
     @BindView(R.id.ll_action_bar_container) LinearLayout llActionBarContainer;
 
-    /** The keyboard height provider */
-    private KeyboardHeightProvider keyboardHeightProvider;
     private boolean isKeyboardShowing;
     private String htmlContent = "<p>Hello World</p>";
 
@@ -119,6 +112,17 @@ import java.util.List;
         fm.beginTransaction()
             .add(R.id.fl_action, mEditorMenuFragment, EditorMenuFragment.class.getName())
             .commit();
+        KeyboardUtils.registerSoftInputChangedListener(this, height -> {
+            isKeyboardShowing = height > 0;
+            if (height > 0) {
+                flAction.setVisibility(View.INVISIBLE);
+                ViewGroup.LayoutParams params = flAction.getLayoutParams();
+                params.height = height;
+                flAction.setLayoutParams(params);
+            } else if (flAction.getVisibility() != View.VISIBLE) {
+                flAction.setVisibility(View.GONE);
+            }
+        });
     }
 
     /**
@@ -157,13 +161,6 @@ import java.util.List;
         mWebView.addJavascriptInterface(mRichEditorCallback, "MRichEditor");
         mWebView.loadUrl("file:///android_asset/richEditor.html");
         mRichEditorAction = new RichEditorAction(mWebView);
-
-        keyboardHeightProvider = new KeyboardHeightProvider(this);
-        findViewById(R.id.fl_container).post(new Runnable() {
-            @Override public void run() {
-                keyboardHeightProvider.start();
-            }
-        });
     }
 
     private class CustomWebChromeClient extends WebChromeClient {
@@ -289,12 +286,10 @@ import java.util.List;
 
     @Override public void onResume() {
         super.onResume();
-        keyboardHeightProvider.setKeyboardHeightObserver(this);
     }
 
     @Override public void onPause() {
         super.onPause();
-        keyboardHeightProvider.setKeyboardHeightObserver(null);
         if (flAction.getVisibility() == View.INVISIBLE) {
             flAction.setVisibility(View.GONE);
         }
@@ -302,36 +297,6 @@ import java.util.List;
 
     @Override public void onDestroy() {
         super.onDestroy();
-        keyboardHeightProvider.close();
-    }
-
-    @Override public void onKeyboardHeightChanged(int height, int orientation) {
-        isKeyboardShowing = height > 0;
-        if (height != 0) {
-            flAction.setVisibility(View.INVISIBLE);
-            ViewGroup.LayoutParams params = flAction.getLayoutParams();
-            params.height = height;
-            flAction.setLayoutParams(params);
-            performInputSpaceAndDel();
-        } else if (flAction.getVisibility() != View.VISIBLE) {
-            flAction.setVisibility(View.GONE);
-        }
-    }
-
-    //TODO not a good solution
-    private void performInputSpaceAndDel() {
-        new Thread(new Runnable() {
-            @Override public void run() {
-                try {
-                    Thread.sleep(100);
-                    Instrumentation instrumentation = new Instrumentation();
-                    instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_SPACE);
-                    instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_DEL);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
     }
 
     class MRichEditorCallback extends RichEditorCallback {
