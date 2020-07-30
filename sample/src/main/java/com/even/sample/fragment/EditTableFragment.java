@@ -14,7 +14,9 @@ import com.even.sample.R;
 
 /**
  * Edit Table Fragment
- * Created by even.wu on 10/8/17.
+ *
+ * @author even.wu
+ * @date 10/8/17
  */
 
 public class EditTableFragment extends Fragment {
@@ -37,8 +39,8 @@ public class EditTableFragment extends Fragment {
 
     @OnClick(R.id.btn_ok) void onClickOK() {
         if (mOnTableListener != null) {
-            mOnTableListener.onTableOK(Integer.valueOf(etRows.getText().toString()),
-                Integer.valueOf(etCols.getText().toString()));
+            mOnTableListener.onTableOK(Integer.parseInt(etRows.getText().toString()),
+                Integer.parseInt(etCols.getText().toString()));
             onClickBack();
         }
     }

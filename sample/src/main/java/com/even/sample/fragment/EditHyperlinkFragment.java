@@ -14,7 +14,9 @@ import com.even.sample.R;
 
 /**
  * Edit Hyperlink Activity
- * Created by even.wu on 10/8/17.
+ *
+ * @author even.wu
+ * @date 10/8/17
  */
 
 public class EditHyperlinkFragment extends Fragment {

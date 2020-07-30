@@ -6,7 +6,9 @@ import java.util.List;
 
 /**
  * Font Style
- * Created by even.wu on 9/8/17.
+ *
+ * @author even.wu
+ * @date 9/8/17
  */
 
 public class FontStyle {

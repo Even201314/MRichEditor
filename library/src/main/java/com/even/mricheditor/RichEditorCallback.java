@@ -8,7 +8,9 @@ import java.util.List;
 
 /**
  * Rich Editor Callback
- * Created by even.wu on 8/8/17.
+ *
+ * @author even.wu
+ * @date 8/8/17
  */
 
 public abstract class RichEditorCallback {

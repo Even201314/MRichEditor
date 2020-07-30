@@ -1,17 +1,16 @@
 package com.even.sample.fragment;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.even.sample.R;
 import com.even.sample.adapter.FontSettingAdapter;
 import java.util.Arrays;
@@ -19,14 +18,16 @@ import java.util.List;
 
 /**
  * Font Setting Fragment
- * Created by even.wu on 9/8/17.
+ *
+ * @author even.wu
+ * @date 9/8/17
  */
 
 public class FontSettingFragment extends Fragment {
     public static final String TYPE = "type";
 
     public static final int TYPE_SIZE = 0;
-    public static final int TYPE_LINE_HGEIGHT = 1;
+    public static final int TYPE_LINE_HEIGHT = 1;
     public static final int TYPE_FONT_FAMILY = 2;
 
     private List<String> fontFamilyList =
@@ -55,7 +56,7 @@ public class FontSettingFragment extends Fragment {
         type = getArguments().getInt(TYPE);
         if (type == TYPE_SIZE) {
             dataSourceList = fontSizeList;
-        } else if (type == TYPE_LINE_HGEIGHT) {
+        } else if (type == TYPE_LINE_HEIGHT) {
             dataSourceList = fontLineHeightList;
         } else if (type == TYPE_FONT_FAMILY) {
             dataSourceList = fontFamilyList;
@@ -69,16 +70,14 @@ public class FontSettingFragment extends Fragment {
         rvContainer.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mAdapter = new FontSettingAdapter(dataSourceList);
-        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                if (mOnResultListener != null) {
-                    mOnResultListener.onResult(dataSourceList.get(position));
-                    FragmentManager fm = getFragmentManager();
-                    fm.beginTransaction()
-                        .remove(FontSettingFragment.this)
-                        .show(fm.findFragmentByTag(EditorMenuFragment.class.getName()))
-                        .commit();
-                }
+        mAdapter.setOnItemClickListener((adapter, view, position) -> {
+            if (mOnResultListener != null) {
+                mOnResultListener.onResult(dataSourceList.get(position));
+                FragmentManager fm = getFragmentManager();
+                fm.beginTransaction()
+                    .remove(FontSettingFragment.this)
+                    .show(fm.findFragmentByTag(EditorMenuFragment.class.getName()))
+                    .commit();
             }
         });
         rvContainer.setAdapter(mAdapter);

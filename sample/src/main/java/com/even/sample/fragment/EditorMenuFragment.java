@@ -83,19 +83,15 @@ public class EditorMenuFragment extends Fragment {
     }
 
     private void initView() {
-        cpvFontTextColor.setOnColorChangeListener(new ColorPaletteView.OnColorChangeListener() {
-            @Override public void onColorChange(String color) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.FORE_COLOR, color);
-                }
+        cpvFontTextColor.setOnColorChangeListener(color -> {
+            if (mActionClickListener != null) {
+                mActionClickListener.onActionPerform(ActionType.FORE_COLOR, color);
             }
         });
 
-        cpvHighlightColor.setOnColorChangeListener(new ColorPaletteView.OnColorChangeListener() {
-            @Override public void onColorChange(String color) {
-                if (mActionClickListener != null) {
-                    mActionClickListener.onActionPerform(ActionType.BACK_COLOR, color);
-                }
+        cpvHighlightColor.setOnColorChangeListener(color -> {
+            if (mActionClickListener != null) {
+                mActionClickListener.onActionPerform(ActionType.BACK_COLOR, color);
             }
         });
     }
@@ -105,7 +101,7 @@ public class EditorMenuFragment extends Fragment {
     }
 
     @OnClick(R.id.ll_line_height) void onClickLineHeight() {
-        openFontSettingFragment(FontSettingFragment.TYPE_LINE_HGEIGHT);
+        openFontSettingFragment(FontSettingFragment.TYPE_LINE_HEIGHT);
     }
 
     @OnClick(R.id.tv_font_name) void onClickFontFamily() {
@@ -137,25 +133,23 @@ public class EditorMenuFragment extends Fragment {
         bundle.putInt(FontSettingFragment.TYPE, type);
         fontSettingFragment.setArguments(bundle);
 
-        fontSettingFragment.setOnResultListener(new FontSettingFragment.OnResultListener() {
-            @Override public void onResult(String result) {
-                if (mActionClickListener != null) {
-                    switch (type) {
-                        case FontSettingFragment.TYPE_SIZE:
-                            tvFontSize.setText(result);
-                            mActionClickListener.onActionPerform(ActionType.SIZE, result);
-                            break;
-                        case FontSettingFragment.TYPE_LINE_HGEIGHT:
-                            tvFontSpacing.setText(result);
-                            mActionClickListener.onActionPerform(ActionType.LINE_HEIGHT, result);
-                            break;
-                        case FontSettingFragment.TYPE_FONT_FAMILY:
-                            tvFontName.setText(result);
-                            mActionClickListener.onActionPerform(ActionType.FAMILY, result);
-                            break;
-                        default:
-                            break;
-                    }
+        fontSettingFragment.setOnResultListener(result -> {
+            if (mActionClickListener != null) {
+                switch (type) {
+                    case FontSettingFragment.TYPE_SIZE:
+                        tvFontSize.setText(result);
+                        mActionClickListener.onActionPerform(ActionType.SIZE, result);
+                        break;
+                    case FontSettingFragment.TYPE_LINE_HEIGHT:
+                        tvFontSpacing.setText(result);
+                        mActionClickListener.onActionPerform(ActionType.LINE_HEIGHT, result);
+                        break;
+                    case FontSettingFragment.TYPE_FONT_FAMILY:
+                        tvFontName.setText(result);
+                        mActionClickListener.onActionPerform(ActionType.FAMILY, result);
+                        break;
+                    default:
+                        break;
                 }
             }
         });
@@ -168,59 +162,57 @@ public class EditorMenuFragment extends Fragment {
     }
 
     public void updateActionStates(final ActionType type, final boolean isActive) {
-        rootView.post(new Runnable() {
-            @Override public void run() {
-                View view = null;
-                for (Map.Entry<Integer, ActionType> e : mViewTypeMap.entrySet()) {
-                    Integer key = e.getKey();
-                    if (e.getValue() == type) {
-                        view = rootView.findViewById(key);
-                        break;
+        rootView.post(() -> {
+            View view = null;
+            for (Map.Entry<Integer, ActionType> e : mViewTypeMap.entrySet()) {
+                Integer key = e.getKey();
+                if (e.getValue() == type) {
+                    view = rootView.findViewById(key);
+                    break;
+                }
+            }
+
+            if (view == null) {
+                return;
+            }
+
+            switch (type) {
+                case BOLD:
+                case ITALIC:
+                case UNDERLINE:
+                case SUBSCRIPT:
+                case SUPERSCRIPT:
+                case STRIKETHROUGH:
+                case JUSTIFY_LEFT:
+                case JUSTIFY_CENTER:
+                case JUSTIFY_RIGHT:
+                case JUSTIFY_FULL:
+                case ORDERED:
+                case CODE_VIEW:
+                case UNORDERED:
+                    if (isActive) {
+                        ((ImageView) view).setColorFilter(
+                            ContextCompat.getColor(getContext(), R.color.colorAccent));
+                    } else {
+                        ((ImageView) view).setColorFilter(
+                            ContextCompat.getColor(getContext(), R.color.tintColor));
                     }
-                }
-
-                if (view == null) {
-                    return;
-                }
-
-                switch (type) {
-                    case BOLD:
-                    case ITALIC:
-                    case UNDERLINE:
-                    case SUBSCRIPT:
-                    case SUPERSCRIPT:
-                    case STRIKETHROUGH:
-                    case JUSTIFY_LEFT:
-                    case JUSTIFY_CENTER:
-                    case JUSTIFY_RIGHT:
-                    case JUSTIFY_FULL:
-                    case ORDERED:
-                    case CODE_VIEW:
-                    case UNORDERED:
-                        if (isActive) {
-                            ((ImageView) view).setColorFilter(
-                                ContextCompat.getColor(getContext(), R.color.colorAccent));
-                        } else {
-                            ((ImageView) view).setColorFilter(
-                                ContextCompat.getColor(getContext(), R.color.tintColor));
-                        }
-                        break;
-                    case NORMAL:
-                    case H1:
-                    case H2:
-                    case H3:
-                    case H4:
-                    case H5:
-                    case H6:
-                        if (isActive) {
-                            view.setBackgroundResource(R.drawable.round_rectangle_blue);
-                        } else {
-                            view.setBackgroundResource(R.drawable.round_rectangle_white);
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                    break;
+                case NORMAL:
+                case H1:
+                case H2:
+                case H3:
+                case H4:
+                case H5:
+                case H6:
+                    if (isActive) {
+                        view.setBackgroundResource(R.drawable.round_rectangle_blue);
+                    } else {
+                        view.setBackgroundResource(R.drawable.round_rectangle_white);
+                    }
+                    break;
+                default:
+                    break;
             }
         });
     }

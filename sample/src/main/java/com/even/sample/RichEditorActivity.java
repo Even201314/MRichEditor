@@ -10,6 +10,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
@@ -20,6 +21,7 @@ import androidx.fragment.app.FragmentManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.blankj.utilcode.util.FileIOUtils;
 import com.blankj.utilcode.util.KeyboardUtils;
 import com.even.mricheditor.ActionType;
 import com.even.mricheditor.RichEditorAction;
@@ -29,7 +31,6 @@ import com.even.sample.fragment.EditHyperlinkFragment;
 import com.even.sample.fragment.EditTableFragment;
 import com.even.sample.fragment.EditorMenuFragment;
 import com.even.sample.interfaces.OnActionPerformListener;
-import com.even.sample.util.FileIOUtil;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
@@ -148,9 +149,9 @@ import java.util.List;
                 super.onPageStarted(view, url, favicon);
             }
 
-            @Override public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                return super.shouldOverrideUrlLoading(view, request);
             }
         });
 
@@ -190,17 +191,14 @@ import java.util.List;
         }
     }
 
-    private RichEditorCallback.OnGetHtmlListener onGetHtmlListener =
-        new RichEditorCallback.OnGetHtmlListener() {
-            @Override public void getHtml(String html) {
-                if (TextUtils.isEmpty(html)) {
-                    Toast.makeText(RichEditorActivity.this, "Empty Html String", Toast.LENGTH_SHORT)
-                        .show();
-                    return;
-                }
-                Toast.makeText(RichEditorActivity.this, html, Toast.LENGTH_SHORT).show();
-            }
-        };
+    private RichEditorCallback.OnGetHtmlListener onGetHtmlListener = html -> {
+        if (TextUtils.isEmpty(html)) {
+            Toast.makeText(RichEditorActivity.this, "Empty Html String", Toast.LENGTH_SHORT)
+                .show();
+            return;
+        }
+        Toast.makeText(RichEditorActivity.this, html, Toast.LENGTH_SHORT).show();
+    };
 
     @OnClick(R.id.iv_get_html) void onClickGetHtml() {
         mRichEditorAction.refreshHtml(mRichEditorCallback, onGetHtmlListener);
@@ -253,7 +251,7 @@ import java.util.List;
     }
 
     private static String encodeFileToBase64Binary(String filePath) {
-        byte[] bytes = FileIOUtil.readFile2BytesByStream(filePath);
+        byte[] bytes = FileIOUtils.readFile2BytesByStream(filePath);
         byte[] encoded = Base64.encode(bytes, Base64.NO_WRAP);
         return new String(encoded);
     }
@@ -261,11 +259,8 @@ import java.util.List;
     @OnClick(R.id.iv_action_insert_link) void onClickInsertLink() {
         KeyboardUtils.hideSoftInput(RichEditorActivity.this);
         EditHyperlinkFragment fragment = new EditHyperlinkFragment();
-        fragment.setOnHyperlinkListener(new EditHyperlinkFragment.OnHyperlinkListener() {
-            @Override public void onHyperlinkOK(String address, String text) {
-                mRichEditorAction.createLink(text, address);
-            }
-        });
+        fragment.setOnHyperlinkListener(
+            (address, text) -> mRichEditorAction.createLink(text, address));
         getSupportFragmentManager().beginTransaction()
             .add(R.id.fl_container, fragment, EditHyperlinkFragment.class.getName())
             .commit();
@@ -274,11 +269,7 @@ import java.util.List;
     @OnClick(R.id.iv_action_table) void onClickInsertTable() {
         KeyboardUtils.hideSoftInput(RichEditorActivity.this);
         EditTableFragment fragment = new EditTableFragment();
-        fragment.setOnTableListener(new EditTableFragment.OnTableListener() {
-            @Override public void onTableOK(int rows, int cols) {
-                mRichEditorAction.insertTable(rows, cols);
-            }
-        });
+        fragment.setOnTableListener((rows, cols) -> mRichEditorAction.insertTable(rows, cols));
         getSupportFragmentManager().beginTransaction()
             .add(R.id.fl_container, fragment, EditHyperlinkFragment.class.getName())
             .commit();
@@ -326,17 +317,17 @@ import java.util.List;
                 return;
             }
 
-            String value = null;
+            String value = "";
             if (values != null && values.length > 0) {
                 value = (String) values[0];
             }
 
             switch (type) {
                 case SIZE:
-                    mRichEditorAction.fontSize(Double.valueOf(value));
+                    mRichEditorAction.fontSize(Double.parseDouble(value));
                     break;
                 case LINE_HEIGHT:
-                    mRichEditorAction.lineHeight(Double.valueOf(value));
+                    mRichEditorAction.lineHeight(Double.parseDouble(value));
                     break;
                 case FORE_COLOR:
                     mRichEditorAction.foreColor(value);
@@ -381,8 +372,7 @@ import java.util.List;
                 case H5:
                 case H6:
                 case LINE:
-                    ActionImageView actionImageView =
-                        (ActionImageView) llActionBarContainer.findViewWithTag(type);
+                    ActionImageView actionImageView = llActionBarContainer.findViewWithTag(type);
                     if (actionImageView != null) {
                         actionImageView.performClick();
                     }

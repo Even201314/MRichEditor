@@ -9,6 +9,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * @author even
+ */
 public class StartActivity extends AppCompatActivity {
     @BindView(R.id.wv_start) WebView mWebView;
 

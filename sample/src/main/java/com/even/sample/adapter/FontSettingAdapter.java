@@ -8,7 +8,9 @@ import java.util.List;
 
 /**
  * Font Setting Adapter
- * Created by even.wu on 9/8/17.
+ *
+ * @author even.wu
+ * @date 9/8/17
  */
 
 public class FontSettingAdapter extends BaseQuickAdapter<String, BaseViewHolder> {

@@ -17,7 +17,9 @@ import java.util.List;
 
 /**
  * Color PaletteView
- * Created by even.wu on 10/8/17.
+ *
+ * @author even.wu
+ * @date 10/8/17
  */
 
 public class ColorPaletteView extends LinearLayout {
@@ -67,12 +69,10 @@ public class ColorPaletteView extends LinearLayout {
             final String color = mColorList.get(i);
             roundView.setTag(color);
             roundView.setBackgroundColor(Color.parseColor(color));
-            roundView.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    setSelectedColor(color);
-                    if (mOnColorChangeListener != null) {
-                        mOnColorChangeListener.onColorChange(roundView.getBackgroundColor());
-                    }
+            roundView.setOnClickListener(v -> {
+                setSelectedColor(color);
+                if (mOnColorChangeListener != null) {
+                    mOnColorChangeListener.onColorChange(roundView.getBackgroundColor());
                 }
             });
             llColorContainer.addView(roundView);
@@ -90,8 +90,7 @@ public class ColorPaletteView extends LinearLayout {
 
         selectedColor = selectedColor.toUpperCase();
         if (!TextUtils.isEmpty(this.selectedColor)) {
-            RoundView currentSelectedView =
-                (RoundView) llColorContainer.findViewWithTag(this.selectedColor);
+            RoundView currentSelectedView = llColorContainer.findViewWithTag(this.selectedColor);
             if (currentSelectedView != null) {
                 currentSelectedView.setSelected(this.selectedColor.equalsIgnoreCase(selectedColor));
             }
